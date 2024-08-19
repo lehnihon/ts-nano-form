@@ -1,11 +1,10 @@
-import { useSyncExternalStore } from "react";
 import TsFormUser from "./createFormUser";
+import useReactForm from "./useReactForm";
 
-const { storeValue, storeError } = TsFormUser.field("document");
+const { storeValue, storeError, onChangeMask } = TsFormUser.field("document");
 
 const InputText = () => {
-  const value = useSyncExternalStore(storeValue.subscribe, storeValue.get);
-  const error = useSyncExternalStore(storeError.subscribe, storeError.get);
+  const { value, error } = useReactForm(storeValue, storeError);
 
   return (
     <>
@@ -14,7 +13,7 @@ const InputText = () => {
       <input
         name="name"
         value={value}
-        onChange={(e) => storeValue.set(e.target.value)}
+        onChange={(e) => onChangeMask(e.target.value, "000-000")}
       />
       <p>Error:{error}</p>
     </>
