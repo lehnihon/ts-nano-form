@@ -1,4 +1,5 @@
-import createStore, { Store } from "../form/store";
+import createStore from "../form/store";
+import { Store } from "../types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const instanceOfStore = (object: any): object is Store => {
