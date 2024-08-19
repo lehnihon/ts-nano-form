@@ -1,0 +1,70 @@
+{
+  "name": "ts-nano-form",
+  "private": true,
+  "version": "0.0.1",
+  "description": "A simple and versatile way to make forms. Lightweight and dependency free.",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/ts-nano-form.d.ts",
+  "main": "./dist/ts-nano-form.umd.cjs",
+  "module": "./dist/ts-nano-form.js",
+  "exports": {
+    ".": {
+      "import": "./dist/ts-nano-form.js",
+      "require": "./dist/ts-nano-form.umd.cjs",
+      "types": "./dist/ts-nano-form.d.ts"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lehnihon/ts-simple-mask.git"
+  },
+  "author": "lk-dev",
+  "license": "MIT",
+  "keywords": [
+    "validation",
+    "form",
+    "mask",
+    "money-mask",
+    "js-mask",
+    "ts-mask",
+    "form-mask",
+    "text-input-mask",
+    "react",
+    "react-native",
+    "nextjs",
+    "next",
+    "vue",
+    "angular",
+    "typescript",
+    "javascript",
+    "ionic"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@types/node": "^22.4.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "globals": "^15.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.0.1",
+    "vite": "^5.4.1",
+    "vite-plugin-dts": "^4.0.3",
+    "vitest": "^2.0.5"
+  }
+}
