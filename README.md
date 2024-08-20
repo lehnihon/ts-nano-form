@@ -1,6 +1,6 @@
 </br>
 <p align="center">
-  <img src="./logo.png" alt="tsnanoform"  />
+  <img src="./logo.png" alt="tsnanoform" height="150"  />
 </p>
 
 <h1 align="center">Typescript Nano Form</h1>
