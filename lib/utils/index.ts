@@ -8,7 +8,7 @@ export const instanceOfStore = (object: any): object is Store => {
   return "subscribe" in object;
 };
 
-export const stripName = (
+export const splitName = (
   name: string,
   values: Record<string, unknown>
 ): Store => {
@@ -17,62 +17,61 @@ export const stripName = (
     return values[name] as Store;
   }
   const firstName = nameSplit.shift();
-  return stripNameRecursive(values[firstName!], nameSplit);
+  return splitNameRecursive(values[firstName!], nameSplit);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const stripNameRecursive = (values: any, nameSplit: string[]): any => {
+const splitNameRecursive = (values: any, nameSplit: string[]): any => {
   const firstName = nameSplit.shift();
   if (!firstName) return;
   return instanceOfStore(values[firstName])
     ? values[firstName!]
-    : stripNameRecursive(values[firstName!], nameSplit);
+    : splitNameRecursive(values[firstName!], nameSplit);
 };
 
-export const getRecursive = <T>(value: unknown): unknown => {
+export const getValueStores = <T>(value: unknown): unknown => {
   if (value instanceof Array) {
     return value.map((item) =>
       Object.keys(item).reduce((acc, key) => {
-        return { ...acc, [key]: getRecursive(item[key]) };
+        return { ...acc, [key]: getValueStores(item[key]) };
       }, {} as T)
     );
   }
-
   return (value as Store).get();
 };
 
-export const setRecursive = (value: unknown, error: unknown): unknown => {
+export const setErrorStores = (value: unknown, error: unknown): unknown => {
   if (value instanceof Array) {
     return value.map((item, i) =>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       Object.keys(item).map((j: any) => {
-        setRecursive(item[j], (error as [])[i][j]);
+        setErrorStores(item[j], (error as [])[i][j]);
       })
     );
   }
   return (value as Store).set(`${error || ""}`);
 };
 
-export const subscribeRecursive = (
+export const subscribeStores = (
   value: unknown,
   listener: (value: string, prevValue: string) => void
 ): unknown =>
   value instanceof Array
     ? value.map((item) =>
         Object.keys(item).map((key) =>
-          subscribeRecursive(item[`${key}`], listener)
+          subscribeStores(item[`${key}`], listener)
         )
       )
     : (value as Store).subscribe(listener);
 
-export const getRecord = (
+export const initStores = (
   value: unknown,
   hasInitalValues: boolean = false
 ): unknown => {
   if (value instanceof Array) {
     return value.map((item) =>
       Object.keys(item).reduce(
-        (acc, key) => ({ ...acc, [key]: getRecord(item[key]) }),
+        (acc, key) => ({ ...acc, [key]: initStores(item[key]) }),
         {}
       )
     );

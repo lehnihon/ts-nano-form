@@ -1,10 +1,10 @@
 import { DEFAULT_MASK_OPTIONS, DEFAULT_MONEY_OPTIONS } from "../constants";
 import { TsFormOptions } from "../types";
 import {
-  getRecord,
-  getRecursive,
-  setRecursive,
-  subscribeRecursive,
+  initStores,
+  getValueStores,
+  setErrorStores,
+  subscribeStores,
 } from "../utils";
 import field from "./field";
 
@@ -13,11 +13,11 @@ const createForm = <T extends Record<string, unknown>>(
   options?: TsFormOptions
 ) => {
   const _values: Record<string, unknown> = Object.keys(initialValues).reduce(
-    (acc, key) => ({ ...acc, [key]: getRecord(initialValues[key], true) }),
+    (acc, key) => ({ ...acc, [key]: initStores(initialValues[key], true) }),
     {}
   );
   const _errors: Record<string, unknown> = Object.keys(initialValues).reduce(
-    (acc, key) => ({ ...acc, [key]: getRecord(initialValues[key]) }),
+    (acc, key) => ({ ...acc, [key]: initStores(initialValues[key]) }),
     {}
   );
   const _rulesMask = options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
@@ -25,33 +25,33 @@ const createForm = <T extends Record<string, unknown>>(
 
   const getValues = () =>
     Object.keys(_values).reduce((acc, key) => {
-      return { ...acc, [key]: getRecursive<T>(_values[key]) };
+      return { ...acc, [key]: getValueStores<T>(_values[key]) };
     }, {} as T);
 
   const getErrors = () =>
     Object.keys(_errors).reduce((acc, key) => {
-      return { ...acc, [key]: getRecursive<T>(_errors[key]) };
+      return { ...acc, [key]: getValueStores<T>(_errors[key]) };
     }, {} as T);
 
   const subscribeValues = (
     listener: (value: string, prevValue: string) => void
   ) =>
     Object.values(_values).map((key) =>
-      subscribeRecursive(_values[`${key}`], listener)
+      subscribeStores(_values[`${key}`], listener)
     );
 
   const subscribeErrors = (
     listener: (value: string, prevValue: string) => void
   ) =>
     Object.values(_errors).map((key) =>
-      subscribeRecursive(_errors[`${key}`], listener)
+      subscribeStores(_errors[`${key}`], listener)
     );
 
   const submit = (validate: (values: T) => T) => {
     const storeValues = getValues();
     const newErrors = validate(storeValues);
     Object.keys(_errors).map((key) => {
-      setRecursive(_errors[key], newErrors[key]);
+      setErrorStores(_errors[key], newErrors[key]);
     });
   };
 
