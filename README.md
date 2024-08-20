@@ -2,8 +2,6 @@
 <p align="center">
   <img src="./logo.png" alt="tsnanoform" height="250"  />
 </p>
-
-<h1 align="center">Typescript Nano Form</h1>
 </br>
 <p align="center">
   <b>A simple and versatile way to make forms. Lightweight and dependency free.</b>
