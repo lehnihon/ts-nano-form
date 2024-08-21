@@ -58,7 +58,48 @@ npm install ts-nano-form
 
 ### Quickstart
 
-Quickstart
+```tsx
+type FormUser = {
+  name: string;
+  document: string;
+};
+
+const TsFormUser = createForm<FormUser>({
+  name: "John Doe",
+  document: "123456789",
+});
+const { field, submit } = TsFormUser;
+
+export const FormUserComponent = () => {
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    submit((data) => ({
+      name: data.name ? "" : "required name",
+      document: data.document ? "" : "required document",
+    }));
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Name</label>
+        <input onChange={(e) => field("name").onChange(e.target.value)} />
+      </div>
+      <div>
+        <label>Document</label>
+        <input
+          onChange={(e) =>
+            field("document").onChangeMask(e.target.value, "00000-0000")
+          }
+        />
+      </div>
+      <div>
+        <input type="submit" value="Send" />
+      </div>
+    </form>
+  );
+};
+```
 
 ![divider](./divider.png)
 
