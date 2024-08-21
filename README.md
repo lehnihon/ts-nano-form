@@ -33,8 +33,7 @@ Need for a solution that works on different stacks.
 ### Features
 
 - Form validation.
-- Mask, unmask input texts, apply custom rules.
-- Money functions.
+- Mask input texts.
 
 ![divider](./divider.png)
 
@@ -74,35 +73,44 @@ const FormUser = createForm<FormUserType>({
 export default FormUser;
 ```
 
-You can access the value and error stores using the field method.
+Values ​​and errors are accessed by get methods.
+To apply masks to the value use onChangeMask or onChangeMoney.
 
 ```tsx
 import FormUser from "./FormUser";
 
-const { field, submit } = FormUser;
-const { storeValue, storeError } = field("name");
-storeValue.get();
-//John Doe
-storeValue.set("Jane Doe");
-storeValue.get();
-//Jane Doe
-```
+const { field } = FormUser;
+const { getValue, getError, onChange, onChangeMask, onChangeMoney } =
+  field("name");
 
-The getValue method is a shortcut for storeValue.get() and onChange is a shortcut for storeValue.set().
-
-To apply masks use onChangeMask or onChangeMoney
-
-```tsx
-const { getValue, onChange, onChangeMask, onChangeMoney } = field("document");
 onChange("123456");
 getValue();
 //123456
+
 onChangeMask("123456", "000-000");
 getValue();
 //123-456
+
 onChangeMoney("12346");
 getValue();
 //1.234,56
+```
+
+After defining the field values, the submit method validates and returns errors
+
+```tsx
+import FormUser from "./FormUser";
+
+const { submit, field } = FormUser;
+const { getError } = field("name");
+
+submit((data) => ({
+  name: data.name ? "" : "erro name",
+  document: data.document ? "" : "testa error",
+}));
+
+getError();
+//'erro name' if it is empty
 ```
 
 ![divider](./divider.png)
