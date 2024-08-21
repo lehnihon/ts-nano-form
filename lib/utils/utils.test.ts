@@ -1,15 +1,25 @@
 import { describe, test, expect } from "vitest";
 import createStore from "../store";
 import {
+  allowNegativeRule,
+  applyMask,
+  applyMaskMoney,
+  clearMoneyValue,
   getValueStores,
   initStores,
   instanceOfStore,
+  onlyDigits,
+  removeSpecialChar,
+  scapeRegex,
   setErrorStores,
+  splitIntegerDecimal,
   splitName,
   subscribeStores,
+  transformMask,
 } from ".";
+import { DEFAULT_MASK_OPTIONS, DEFAULT_MONEY_OPTIONS } from "../constants";
 
-describe("Utils", () => {
+describe("Utils Form", () => {
   test("instanceOfStore", () => {
     const store = createStore();
     expect(instanceOfStore(store)).toBe(true);
@@ -180,8 +190,95 @@ describe("Utils", () => {
   });
 
   test("initStores", () => {
+    const values = "2";
+    const store = initStores(values, true);
+    expect(store.get()).toBe("2");
+  });
+
+  test("initStores array", () => {
     const values = [{ name: "1" }];
     const store = initStores(values, true);
     expect(store[0].name.get()).toBe("1");
+  });
+});
+
+describe("Utils Mask", () => {
+  test("transformMask", () => {
+    const mapOptions = {
+      pattern: /[A-Za-z]/,
+      transform: (prevValue: string, newChar: string) => {
+        return { prevValue, newChar: newChar.toUpperCase() };
+      },
+    };
+    const value = transformMask("bcd", "a", mapOptions);
+    expect(value).toBe("aBCD");
+  });
+
+  test("allowNegativeRule negative", () => {
+    const sign = allowNegativeRule("100-", {
+      thousands: ".",
+      decimal: ",",
+      precision: 2,
+      allowNegative: true,
+    });
+    expect(sign).toBe("-");
+  });
+
+  test("allowNegativeRule double negative", () => {
+    const sign = allowNegativeRule("100--", {
+      thousands: ".",
+      decimal: ",",
+      precision: 2,
+      allowNegative: true,
+    });
+    expect(sign).toBe("");
+  });
+
+  test("allowNegativeRule positive", () => {
+    const sign = allowNegativeRule("100-+", {
+      thousands: ".",
+      decimal: ",",
+      precision: 2,
+      allowNegative: true,
+    });
+    expect(sign).toBe("");
+  });
+
+  test("applyMask", () => {
+    const value = applyMask("1234567890", "000-000-000", DEFAULT_MASK_OPTIONS);
+    expect(value).toBe("123-456-789");
+  });
+
+  test("applyMaskMoney", () => {
+    const value = applyMaskMoney(1234567.89, "-", DEFAULT_MONEY_OPTIONS);
+    expect(value).toBe("-1.234.567,89");
+  });
+
+  test("splitIntegerDecimal", () => {
+    const value = splitIntegerDecimal("1.234.567,89", DEFAULT_MONEY_OPTIONS);
+    expect(value).toStrictEqual({
+      integerPart: "1234567",
+      decimalPart: "89",
+    });
+  });
+
+  test("clearMoneyValue", () => {
+    const value = clearMoneyValue("1.234.567,89", 2);
+    expect(value).toBe(1234567.89);
+  });
+
+  test("scapeRegex", () => {
+    const value = scapeRegex(".*+");
+    expect(value).toBe("\\.\\*\\+");
+  });
+
+  test("removeSpecialChar", () => {
+    const value = removeSpecialChar("A,B/C1*2.3");
+    expect(value).toBe("ABC123");
+  });
+
+  test("onlyDigits", () => {
+    const value = onlyDigits("A123BC");
+    expect(value).toBe("123");
   });
 });

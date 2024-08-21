@@ -36,14 +36,14 @@ const createForm = <T extends Record<string, unknown>>(
   const subscribeValues = (
     listener: (value: string, prevValue: string) => void
   ) =>
-    Object.values(_values).map((key) =>
+    Object.keys(_values).map((key) =>
       subscribeStores(_values[`${key}`], listener)
     );
 
   const subscribeErrors = (
     listener: (value: string, prevValue: string) => void
   ) =>
-    Object.values(_errors).map((key) =>
+    Object.keys(_errors).map((key) =>
       subscribeStores(_errors[`${key}`], listener)
     );
 

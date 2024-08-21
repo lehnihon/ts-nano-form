@@ -52,9 +52,7 @@ export const subscribeStores = (
 ): unknown =>
   value instanceof Array
     ? value.map((item) =>
-        Object.keys(item).map((key) =>
-          subscribeStores(item[`${key}`], listener)
-        )
+        Object.keys(item).map((key) => subscribeStores(item[key], listener))
       )
     : (value as Store).subscribe(listener);
 
