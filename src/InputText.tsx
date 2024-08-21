@@ -11,7 +11,6 @@ const InputText = () => {
       <p>Valor A:{value}</p>
       <label>Campo Test a:</label>
       <input
-        name="name"
         value={value}
         onChange={(e) => onChangeMask(e.target.value, "000-000")}
       />

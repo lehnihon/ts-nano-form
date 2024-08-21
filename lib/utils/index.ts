@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Store } from "../types";
 import { DEFAULT_MONEY_OPTIONS } from "../constants";
 import { MoneyOptions, MapOptions, MaskOptions } from "../types";
 import createStore from "../store";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const instanceOfStore = (object: any): object is Store => {
   return "subscribe" in object;
 };
@@ -20,7 +20,6 @@ export const splitName = (
   return splitNameRecursive(values[firstName!], nameSplit);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const splitNameRecursive = (values: any, nameSplit: string[]): any => {
   const firstName = nameSplit.shift();
   if (!firstName) return;
@@ -29,28 +28,23 @@ const splitNameRecursive = (values: any, nameSplit: string[]): any => {
     : splitNameRecursive(values[firstName!], nameSplit);
 };
 
-export const getValueStores = <T>(value: unknown): unknown => {
-  if (value instanceof Array) {
-    return value.map((item) =>
-      Object.keys(item).reduce((acc, key) => {
-        return { ...acc, [key]: getValueStores(item[key]) };
-      }, {} as T)
-    );
-  }
-  return (value as Store).get();
-};
+export const getValueStores = <T>(value: unknown): unknown =>
+  value instanceof Array
+    ? value.map((item) =>
+        Object.keys(item).reduce((acc, key) => {
+          return { ...acc, [key]: getValueStores(item[key]) };
+        }, {} as T)
+      )
+    : (value as Store).get();
 
-export const setErrorStores = (value: unknown, error: unknown): unknown => {
-  if (value instanceof Array) {
-    return value.map((item, i) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      Object.keys(item).map((j: any) => {
-        setErrorStores(item[j], (error as [])[i][j]);
-      })
-    );
-  }
-  return (value as Store).set(`${error || ""}`);
-};
+export const setErrorStores = (value: unknown, error: unknown): unknown =>
+  value instanceof Array
+    ? value.map((item, i) =>
+        Object.keys(item).map((j: any) => {
+          setErrorStores(item[j], (error as [])[i][j]);
+        })
+      )
+    : (value as Store).set(`${error || ""}`);
 
 export const subscribeStores = (
   value: unknown,
@@ -67,17 +61,18 @@ export const subscribeStores = (
 export const initStores = (
   value: unknown,
   hasInitalValues: boolean = false
-): unknown => {
-  if (value instanceof Array) {
-    return value.map((item) =>
-      Object.keys(item).reduce(
-        (acc, key) => ({ ...acc, [key]: initStores(item[key]) }),
-        {}
+): any =>
+  value instanceof Array
+    ? value.map((item) =>
+        Object.keys(item).reduce(
+          (acc, key) => ({
+            ...acc,
+            [key]: initStores(item[key], hasInitalValues),
+          }),
+          {}
+        )
       )
-    );
-  }
-  return hasInitalValues ? createStore(`${value}`) : createStore();
-};
+    : createStore(hasInitalValues ? `${value}` : "");
 
 export const transformMask = (
   value: string,
@@ -120,15 +115,14 @@ export const applyMaskMoney = (
   value: number,
   sign: string,
   rules: MoneyOptions
-) => {
-  return `${sign}${rules.prefix || ""}${value
+) =>
+  `${sign}${rules.prefix || ""}${value
     .toFixed(rules.precision)
     .replace(".", rules.decimal)
     .replace(
       regexMaskMoney(rules.precision, rules.decimal),
       `$1${rules.thousands}`
     )}`;
-};
 
 export const regexMaskMoney = (precision: number, decimal: string) =>
   new RegExp(

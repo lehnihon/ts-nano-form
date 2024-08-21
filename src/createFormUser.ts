@@ -9,8 +9,8 @@ export const userSchema = object({
 export type FormUser = InferType<typeof userSchema>;
 
 const TsFormUser = createForm<FormUser>({
-  name: "",
-  document: "",
+  name: "initial name",
+  document: "initial document",
 });
 
 export default TsFormUser;

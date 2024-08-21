@@ -181,9 +181,7 @@ describe("Utils", () => {
 
   test("initStores", () => {
     const values = [{ name: "1" }];
-
     const store = initStores(values, true);
-
-    expect(store[0].name.get()).toBe("");
+    expect(store[0].name.get()).toBe("1");
   });
 });

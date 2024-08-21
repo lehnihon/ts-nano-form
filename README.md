@@ -5,7 +5,7 @@
 <h1 align="center"></h1>
 </br>
 <p align="center">
-  <b>A simple and versatile way to make forms. Lightweight and dependency free.</b>
+  <b>A simple and versatile way of working with forms. Lightweight and dependency free.</b>
 </p>
 </br>
 <p align="center">
