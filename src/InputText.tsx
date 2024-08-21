@@ -1,20 +1,24 @@
+import { useSyncExternalStore } from "react";
 import TsFormUser from "./createFormUser";
-import useReactForm from "./useReactForm";
 
-const { storeValue, storeError, onChangeMask } = TsFormUser.field("document");
+interface InputTextProps {
+  field: string;
+}
 
-const InputText = () => {
-  const { value, error } = useReactForm(storeValue, storeError);
+const InputText = ({ field }: InputTextProps) => {
+  const { storeValue, storeError, onChangeMask } = TsFormUser.field(field);
+
+  const value = useSyncExternalStore(storeValue.subscribe, storeValue.get);
+  const error = useSyncExternalStore(storeError.subscribe, storeError.get);
 
   return (
     <>
-      <p>Valor A:{value}</p>
-      <label>Campo Test a:</label>
+      <p>{field}</p>
       <input
         value={value}
         onChange={(e) => onChangeMask(e.target.value, "000-000")}
       />
-      <p>Error:{error}</p>
+      <p>{error}</p>
     </>
   );
 };

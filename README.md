@@ -58,47 +58,51 @@ npm install ts-nano-form
 
 ### Quickstart
 
+For each form create a component with the createForm method.
+
 ```tsx
-type FormUser = {
+type FormUserType = {
   name: string;
   document: string;
 };
 
-const TsFormUser = createForm<FormUser>({
+const FormUser = createForm<FormUserType>({
   name: "John Doe",
   document: "123456789",
 });
-const { field, submit } = TsFormUser;
 
-export const FormUserComponent = () => {
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    submit((data) => ({
-      name: data.name ? "" : "required name",
-      document: data.document ? "" : "required document",
-    }));
-  };
+export default FormUser;
+```
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Name</label>
-        <input onChange={(e) => field("name").onChange(e.target.value)} />
-      </div>
-      <div>
-        <label>Document</label>
-        <input
-          onChange={(e) =>
-            field("document").onChangeMask(e.target.value, "00000-0000")
-          }
-        />
-      </div>
-      <div>
-        <input type="submit" value="Send" />
-      </div>
-    </form>
-  );
-};
+You can access the value and error stores using the field method.
+
+```tsx
+import FormUser from "./FormUser";
+
+const { field, submit } = FormUser;
+const { storeValue, storeError } = field("name");
+storeValue.get();
+//John Doe
+storeValue.set("Jane Doe");
+storeValue.get();
+//Jane Doe
+```
+
+The getValue method is a shortcut for storeValue.get() and onChange is a shortcut for storeValue.set().
+
+To apply masks use onChangeMask or onChangeMoney
+
+```tsx
+const { getValue, onChange, onChangeMask, onChangeMoney } = field("document");
+onChange("123456");
+getValue();
+//123456
+onChangeMask("123456", "000-000");
+getValue();
+//123-456
+onChangeMoney("12346");
+getValue();
+//1.234,56
 ```
 
 ![divider](./divider.png)
