@@ -3,7 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import InputText from "./InputText";
-import TsFormUser from "./createFormUser";
+import TsFormUser, { TsFormUserInitalValues } from "./createFormUser";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -12,10 +12,15 @@ function App() {
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     submit((data) => {
-      return {
-        name: data.name ? "" : "erro name",
-        document: data.document ? "" : "testa error",
-      };
+      const errors = { ...TsFormUserInitalValues };
+
+      if (!data.name) errors.name = "name required";
+      if (!data.document) errors.document = "document required";
+      //check for errors
+      if (JSON.stringify(errors) === JSON.stringify(TsFormUserInitalValues))
+        console.log("send data", data);
+
+      return errors;
     });
   };
 

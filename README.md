@@ -57,7 +57,7 @@ npm install ts-nano-form
 
 ### Quickstart
 
-For each form create a component with the createForm method.
+For each form, create a component with the createForm method.
 
 ```tsx
 type FormUserType = {
@@ -65,19 +65,19 @@ type FormUserType = {
   document: string;
 };
 
-const FormUser = createForm<FormUserType>({
-  name: "John Doe",
-  document: "123456789",
-});
+export const FormUserFields = {
+  name: "",
+  document: "",
+};
 
-export default FormUser;
+export const FormUser = createForm<FormUserType>(FormUserFields);
 ```
 
-Values ​​and errors are accessed by get methods.
-To apply masks to the value use onChangeMask or onChangeMoney.
+Values ​​and errors are accessed by get methods getValue and getError.
+To apply masks use onChangeMask or onChangeMoney.
 
 ```tsx
-import FormUser from "./FormUser";
+import { FormUser } from "./FormUser";
 
 const { field } = FormUser;
 const { getValue, getError, onChange, onChangeMask, onChangeMoney } =
@@ -96,21 +96,27 @@ getValue();
 //1.234,56
 ```
 
-After defining the field values, the submit method validates and returns errors
+The submit method validates and returns errors
 
 ```tsx
-import FormUser from "./FormUser";
+import { FormUser, FormUserFields } from "./FormUser";
 
 const { submit, field } = FormUser;
 const { getError } = field("name");
 
-submit((data) => ({
-  name: data.name ? "" : "erro name",
-  document: data.document ? "" : "testa error",
-}));
+submit((data) => {
+  let errors = { ...FormUserFields };
+  if (!data.name) errors.name = "name required";
+  if (!data.document) errors.document = "document required";
+  //check for errors
+  if (JSON.stringify(errors) === JSON.stringify(FormUserFields))
+    console.log("send data", data);
+
+  return errors;
+});
 
 getError();
-//'erro name' if it is empty
+//'name required' if it is empty
 ```
 
 ![divider](./divider.png)

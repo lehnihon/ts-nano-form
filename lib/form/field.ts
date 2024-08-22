@@ -12,40 +12,43 @@ const field = (
   const _storeValue = splitName(name, values);
   const _storeError = splitName(name, errors);
 
-  const getValue = () => {
-    return _storeValue.get();
+  const getValue = (): string => {
+    return _storeValue.get() || "";
   };
 
-  const getError = () => {
-    return _storeError.get();
+  const getError = (): string => {
+    return _storeError.get() || "";
   };
 
-  const getMasked = (maskRule: string) => {
+  const getMasked = (maskRule: string): string => {
     return mask(_storeValue.get() ?? "", maskRule, rulesMask);
   };
 
-  const getUnmasked = () => {
+  const getUnmasked = (): string => {
     return unmask(_storeValue.get() ?? "", rulesMask);
   };
 
-  const getMoneyMasked = () => {
+  const getMoneyMasked = (): string => {
     return maskMoney(_storeValue.get() ?? "", rulesMoney);
   };
 
-  const getMoneyUnmasked = () => {
+  const getMoneyUnmasked = (): string => {
     return unmaskMoney(_storeValue.get() ?? "", rulesMoney);
   };
 
-  const onChange = (value: string) => {
+  const onChange = (value: string): string => {
     _storeValue.set(value);
+    return getValue();
   };
 
-  const onChangeMask = (value: string, maskRule: string) => {
+  const onChangeMask = (value: string, maskRule: string): string => {
     _storeValue.set(mask(value, maskRule, rulesMask));
+    return getValue();
   };
 
-  const onChangeMoney = (value: string) => {
+  const onChangeMoney = (value: string): string => {
     _storeValue.set(maskMoney(value, rulesMoney));
+    return getValue();
   };
 
   return {
