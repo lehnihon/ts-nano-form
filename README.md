@@ -101,7 +101,7 @@ getValue();
 //1.234,56
 ```
 
-The submit method validates and returns errors
+The submit method validates and returns errors.
 
 ```tsx
 import { FormUser, FormUserFields } from "./FormUser";
@@ -148,7 +148,7 @@ storeValue.subscribe((value: string, prevValue: string) => {
   console.log(value, prevValue);
 });
 storeValue.set("67890");
-//12345 67890
+//67890 12345
 ```
 
 onChange, onChangeMask, onChangeMoney are shortcuts for set methods.
@@ -220,19 +220,19 @@ const {
 onChange("123456");
 getMasked("000-000");
 //123-456
-getMoneyMasked("000-000");
+getMoneyMasked();
 //1.234,56
 
-onChangeMask("123456", "000-000");
+onChangeMask("789012", "000-000");
 getValue();
-//123-456
+//789-012
 
-onChangeMoney("12346");
+onChangeMoney("345678");
 getValue();
-//1.234,56
+//3.456,78
 
 getUnmasked();
-//123456
+//345678
 ```
 
 ![divider](./divider.png)
