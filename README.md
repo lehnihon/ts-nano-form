@@ -140,7 +140,7 @@ export const FormUserFields = {
 };
 
 export const FormUser = createForm<FormUserType>(FormUserFields);
-const { storeValue, storeError } = field("name");
+const { storeValue, storeError } = field("document");
 storeValue.subscribe((value: string, prevValue: string) => {
   console.log(value, prevValue);
 });
@@ -163,7 +163,7 @@ export const FormUserFields = {
 };
 
 export const FormUser = createForm<FormUserType>(FormUserFields);
-const { storeValue, storeError, onChange, getValue } = field("name");
+const { storeValue, storeError, onChange, getValue } = field("document");
 storeValue.set("12345");
 storeValue.get();
 //12345
@@ -188,22 +188,50 @@ There are some ready-to-use standard rules:
 
 ```ts
 import createTsMask from "ts-simple-mask";
+import { FormUser } from "./FormUser";
 
-type FormUserType = {
-  document: string;
-};
-
-export const FormUserFields = {
-  document: "",
-};
-
-export const FormUser = createForm<FormUserType>(FormUserFields);
 const { mask, unmask } = FormUser;
 mask("123456789", "000-000-000");
 //123-456-789
 
 unmask("123-456-789");
 //123456789
+```
+
+To place a masked value in a store, use the onChangeMask or onChangeMoney methods.
+
+There are also getMasked and getMoneyMasked methods that transform and return a raw value from the store.
+
+```ts
+import createTsMask from "ts-simple-mask";
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const {
+  onChange,
+  onChangeMask,
+  onChangeMoney,
+  getMasked,
+  getMoneyMasked,
+  getUnmasked,
+} = field("document");
+
+onChange("123456");
+getMasked("000-000");
+//123-456
+getMoneyMasked("000-000");
+//1.234,56
+
+onChangeMask("123456", "000-000");
+getValue();
+//123-456
+
+onChangeMoney("12346");
+getValue();
+//1.234,56
+
+getUnmasked();
+//123456
 ```
 
 ![divider](./divider.png)
