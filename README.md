@@ -43,6 +43,7 @@ Need for a solution that works on different stacks.
 - [Store](#store)
 - [Mask](#mask)
 - [TS Nano Form API](#ts-nano-form-api)
+  - [Mask API](#mask-api)
 - [Customize](#customize)
 - [Examples](#examples)
 - [License](#license)
@@ -62,6 +63,8 @@ npm install ts-nano-form
 For each form, create a component with the createForm method.
 
 ```tsx
+import createTsMask from "ts-simple-mask";
+
 type FormUserType = {
   name: string;
   document: string;
@@ -187,7 +190,6 @@ There are some ready-to-use standard rules:
 - 'z' = any alphanumeric and transform to lowercase
 
 ```ts
-import createTsMask from "ts-simple-mask";
 import { FormUser } from "./FormUser";
 
 const { mask, unmask } = FormUser;
@@ -203,7 +205,6 @@ To place a masked value in a store, use the onChangeMask or onChangeMoney method
 There are also getMasked and getMoneyMasked methods that transform and return a raw value from the store.
 
 ```ts
-import createTsMask from "ts-simple-mask";
 import { FormUser } from "./FormUser";
 
 const { field } = FormUser;
@@ -238,7 +239,87 @@ getUnmasked();
 
 ## TS Nano Form API
 
-Api
+The API is separated into Mask API where the mask functions are located.
+
+Form API methods, related to form, validation.
+
+Field API methods, used to manipulate stores.
+
+### Mask API
+
+- Mask text
+
+`mask(value: string, maskRule: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { mask } = FormUser;
+mask("ABC1A23", "SSS-0A00");
+//ABC-1A23
+```
+
+- Unmask text
+
+`unmask(value: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { unmask } = FormUser;
+const unmasked = unmask("ABC-1A23");
+//ABC1A23
+```
+
+- Mask money
+
+`maskMoney(value: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { maskMoney } = FormUser;
+const masked = maskMoney("123456");
+//1.234,56
+```
+
+- Unmask money
+
+`unmaskMoney(value: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { unmaskMoney } = FormUser;
+const umasked = unmaskMoney("1.234,56");
+//123456
+```
+
+- Get default masks
+
+`getMask(value: string, type: MaskType)`
+
+```ts
+import { FormUser } from "./FormUser";
+import { MaskType } from "ts-simple-mask";
+
+const { mask, getMask } = FormUser;
+const value = "469636036";
+mask(value, getMask(value, MaskType.DOCUMENT_BR));
+//46.963.603-6
+```
+
+- Get placeholder
+
+`getPlaceholder(maskRule: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { getPlaceholder } = FormUser;
+const placeholder = getPlaceholder("SSS-0A00");
+//___-____
+```
 
 ![divider](./divider.png)
 
