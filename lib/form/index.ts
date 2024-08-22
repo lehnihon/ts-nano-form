@@ -1,4 +1,12 @@
 import { DEFAULT_MASK_OPTIONS, DEFAULT_MONEY_OPTIONS } from "../constants";
+import {
+  getMask,
+  getPlaceholder,
+  mask,
+  maskMoney,
+  unmask,
+  unmaskMoney,
+} from "../mask";
 import { TsFormOptions } from "../types";
 import {
   initStores,
@@ -63,6 +71,13 @@ const createForm = <T extends Record<string, unknown>>(
     field: (name: string) =>
       field(name, _values, _errors, _rulesMask, _rulesMoney),
     submit,
+    mask: (value: string, maskRule: string) =>
+      mask(value, maskRule, _rulesMask),
+    unmask: (value: string) => unmask(value, _rulesMask),
+    maskMoney: (value: string) => maskMoney(value, _rulesMoney),
+    unmaskMoney: (value: string) => unmaskMoney(value, _rulesMoney),
+    getPlaceholder: (value: string) => getPlaceholder(value, _rulesMask),
+    getMask,
   };
 };
 

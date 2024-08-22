@@ -40,6 +40,8 @@ Need for a solution that works on different stacks.
 ## Table of Contents
 
 - [Getting Started](#getting-started)
+- [Store](#store)
+- [Mask](#mask)
 - [TS Nano Form API](#ts-nano-form-api)
 - [Customize](#customize)
 - [Examples](#examples)
@@ -117,6 +119,91 @@ submit((data) => {
 
 getError();
 //'name required' if it is empty
+```
+
+![divider](./divider.png)
+
+## Store
+
+Values and errors ​​are placed in stores.
+In stores each change can be watched with the subscribe method.
+
+```ts
+import createTsMask from "ts-simple-mask";
+
+type FormUserType = {
+  document: string;
+};
+
+export const FormUserFields = {
+  document: "12345",
+};
+
+export const FormUser = createForm<FormUserType>(FormUserFields);
+const { storeValue, storeError } = field("name");
+storeValue.subscribe((value: string, prevValue: string) => {
+  console.log(value, prevValue);
+});
+storeValue.set("67890");
+//12345 67890
+```
+
+onChange, onChangeMask, onChangeMoney are shortcuts for set methods.
+getValue, getError for get methods.
+
+```ts
+import createTsMask from "ts-simple-mask";
+
+type FormUserType = {
+  document: string;
+};
+
+export const FormUserFields = {
+  document: "",
+};
+
+export const FormUser = createForm<FormUserType>(FormUserFields);
+const { storeValue, storeError, onChange, getValue } = field("name");
+storeValue.set("12345");
+storeValue.get();
+//12345
+onChange("67890");
+getValue();
+//67890
+```
+
+![divider](./divider.png)
+
+## Mask
+
+There are some ready-to-use standard rules:
+
+- '0' = any digit
+- 'A' = any alphanumeric
+- 'S' = any letter
+- 'X' = any letter and transform to uppercase
+- 'x' = any letter and transform to lowercase
+- 'Z' = any alphanumeric and transform to uppercase
+- 'z' = any alphanumeric and transform to lowercase
+
+```ts
+import createTsMask from "ts-simple-mask";
+
+type FormUserType = {
+  document: string;
+};
+
+export const FormUserFields = {
+  document: "",
+};
+
+export const FormUser = createForm<FormUserType>(FormUserFields);
+const { mask, unmask } = FormUser;
+mask("123456789", "000-000-000");
+//123-456-789
+
+unmask("123-456-789");
+//123456789
 ```
 
 ![divider](./divider.png)
