@@ -44,6 +44,8 @@ Need for a solution that works on different stacks.
 - [Mask](#mask)
 - [TS Nano Form API](#ts-nano-form-api)
   - [Mask API](#mask-api)
+  - [Form API](#form-api)
+  - [Store API](#store-api)
 - [Customize](#customize)
 - [Examples](#examples)
 - [License](#license)
