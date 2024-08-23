@@ -17,9 +17,9 @@ describe("Form", () => {
   });
 
   test("getErrors", () => {
-    TsForm.field("document").storeError.set("required document");
-    TsForm.field("data.0.image").storeError.set("required image a");
-    TsForm.field("data.1.image").storeError.set("required image b");
+    TsForm.field("document").setError("required document");
+    TsForm.field("data.0.image").setError("required image a");
+    TsForm.field("data.1.image").setError("required image b");
 
     expect(TsForm.getErrors()).toStrictEqual({
       name: "",
@@ -33,9 +33,9 @@ describe("Form", () => {
     const listener = (value: string, prevValue: string) => {
       if (prevValue === "Leandro" && value === "name") data = "b";
     };
-    TsForm.subscribeValues(listener);
+    TsForm.subscribeAllValues(listener);
     expect(data).toBe("a");
-    TsForm.field("name").storeValue.set("name");
+    TsForm.field("name").setValue("name");
     expect(data).toBe("b");
   });
 
@@ -44,19 +44,19 @@ describe("Form", () => {
     const listener = (value: string, prevValue: string) => {
       if (prevValue === "" && value === "error name") data = "d";
     };
-    TsForm.subscribeErrors(listener);
+    TsForm.subscribeAllErrors(listener);
     expect(data).toBe("c");
-    TsForm.field("name").storeError.set("error name");
+    TsForm.field("name").setError("error name");
     expect(data).toBe("d");
   });
 
   test("submit", () => {
-    TsForm.field("name").storeValue.set("");
+    TsForm.field("name").setValue("");
     TsForm.submit((data) => ({
       name: data?.name ? "" : "required name",
       document: data?.name ? "" : "required document",
       data: [{ image: "" }, { image: "" }],
     }));
-    expect(TsForm.field("name").storeError.get()).toBe("required name");
+    expect(TsForm.field("name").getError()).toBe("required name");
   });
 });
