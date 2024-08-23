@@ -130,7 +130,7 @@ getError();
 
 ## Store
 
-Values and errors ​​are placed in stores.
+Stores are used to store all values ​​and errors and then validated by the submit method.
 Each change can be watched with the subscribe method.
 
 ```ts
@@ -153,7 +153,7 @@ setValue("67890");
 //67890 12345
 ```
 
-setValue is to change store values.
+setValue, setError are to change store values.
 getValue, getError are to return the values.
 
 ```ts
@@ -191,6 +191,9 @@ There are some ready-to-use standard rules:
 - 'Z' = any alphanumeric and transform to uppercase
 - 'z' = any alphanumeric and transform to lowercase
 
+To use the mask without selecting a field, use mask, unmask.
+These values ​​are not put in the store.
+
 ```ts
 import { FormUser } from "./FormUser";
 
@@ -202,9 +205,11 @@ unmask("123-456-789");
 //123456789
 ```
 
-To place a masked value in a store, use the setMasked or setMoneyMasked methods.
+If is necessary to validate these values, put a masked value in a store, use the setMasked or setMoneyMasked methods.
 
-There are also getMasked and getMoneyMasked methods that transform and return a raw value from the store.
+There are also getMasked and getMoneyMasked which returns a masked value without changing the store.
+
+Be careful when using the getUnmasked method, if the value is money use getMoneyUnmasked to add the decimal values.
 
 ```ts
 import { FormUser } from "./FormUser";
@@ -216,7 +221,8 @@ const {
   setMoneyMasked,
   getMasked,
   getMoneyMasked,
-  getUnmasked,
+  getMoneyMasked,
+  getMoneyUnmasked,
 } = field("document");
 
 setValue("123456");
@@ -224,6 +230,8 @@ getMasked("000-000");
 //123-456
 getMoneyMasked();
 //1.234,56
+getValue();
+//123456
 
 setMasked("789012", "000-000");
 getValue();
@@ -233,6 +241,8 @@ setMoneyMasked("345678");
 getValue();
 //3.456,78
 
+getMoneyUnmasked();
+//3456.78
 getUnmasked();
 //345678
 ```
