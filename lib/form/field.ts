@@ -36,33 +36,47 @@ const field = (
     return unmaskMoney(_storeValue.get() ?? "", rulesMoney);
   };
 
-  const onChange = (value: string): string => {
+  const setError = (value: string): string => {
+    _storeError.set(value);
+    return getError();
+  };
+
+  const setValue = (value: string): string => {
     _storeValue.set(value);
     return getValue();
   };
 
-  const onChangeMask = (value: string, maskRule: string): string => {
+  const setMasked = (value: string, maskRule: string): string => {
     _storeValue.set(mask(value, maskRule, rulesMask));
     return getValue();
   };
 
-  const onChangeMoney = (value: string): string => {
+  const setMoneyMasked = (value: string): string => {
     _storeValue.set(maskMoney(value, rulesMoney));
     return getValue();
   };
 
+  const subscribeValue = (
+    listener: (value: string, prevValue: string) => void
+  ) => _storeValue.subscribe(listener);
+
+  const subscribeError = (
+    listener: (value: string, prevValue: string) => void
+  ) => _storeError.subscribe(listener);
+
   return {
-    storeValue: _storeValue,
-    storeError: _storeError,
     getValue,
     getMasked,
     getUnmasked,
     getMoneyMasked,
     getMoneyUnmasked,
     getError,
-    onChange,
-    onChangeMask,
-    onChangeMoney,
+    setError,
+    setValue,
+    setMasked,
+    setMoneyMasked,
+    subscribeValue,
+    subscribeError,
   };
 };
 

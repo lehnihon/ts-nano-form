@@ -79,24 +79,24 @@ export const FormUser = createForm<FormUserType>(FormUserFields);
 ```
 
 Values ​​and errors are accessed by get methods getValue and getError.
-To apply masks use onChangeMask or onChangeMoney.
+To apply masks use setMasked or setMoneyMasked.
 
 ```tsx
 import { FormUser } from "./FormUser";
 
 const { field } = FormUser;
-const { getValue, getError, onChange, onChangeMask, onChangeMoney } =
+const { getValue, getError, setValue, setMasked, setMoneyMasked } =
   field("name");
 
-onChange("123456");
+setValue("123456");
 getValue();
 //123456
 
-onChangeMask("123456", "000-000");
+setMasked("123456", "000-000");
 getValue();
 //123-456
 
-onChangeMoney("12346");
+setMoneyMasked("12346");
 getValue();
 //1.234,56
 ```
@@ -129,7 +129,7 @@ getError();
 ## Store
 
 Values and errors ​​are placed in stores.
-In stores each change can be watched with the subscribe method.
+Each change can be watched with the subscribe method.
 
 ```ts
 import createTsMask from "ts-simple-mask";
@@ -143,16 +143,16 @@ export const FormUserFields = {
 };
 
 export const FormUser = createForm<FormUserType>(FormUserFields);
-const { storeValue, storeError } = field("document");
-storeValue.subscribe((value: string, prevValue: string) => {
-  console.log(value, prevValue);
-});
-storeValue.set("67890");
+const { subscribeValue, setValue } = field("document");
+subscribeValue((value: string, prevValue: string) =>
+  console.log(value, prevValue)
+);
+setValue("67890");
 //67890 12345
 ```
 
-onChange, onChangeMask, onChangeMoney are shortcuts for set methods.
-getValue, getError for get methods.
+setValue is to change store values.
+getValue, getError are to return the values.
 
 ```ts
 import createTsMask from "ts-simple-mask";
@@ -166,11 +166,11 @@ export const FormUserFields = {
 };
 
 export const FormUser = createForm<FormUserType>(FormUserFields);
-const { storeValue, storeError, onChange, getValue } = field("document");
-storeValue.set("12345");
-storeValue.get();
-//12345
-onChange("67890");
+const { setValue, setValueMasked, getValue } = field("document");
+setValueMasked("12345");
+getValue();
+//123,45
+setValue("67890");
 getValue();
 //67890
 ```
@@ -200,7 +200,7 @@ unmask("123-456-789");
 //123456789
 ```
 
-To place a masked value in a store, use the onChangeMask or onChangeMoney methods.
+To place a masked value in a store, use the setMasked or setMoneyMasked methods.
 
 There are also getMasked and getMoneyMasked methods that transform and return a raw value from the store.
 
@@ -209,25 +209,25 @@ import { FormUser } from "./FormUser";
 
 const { field } = FormUser;
 const {
-  onChange,
-  onChangeMask,
-  onChangeMoney,
+  setValue,
+  setMasked,
+  setMoneyMasked,
   getMasked,
   getMoneyMasked,
   getUnmasked,
 } = field("document");
 
-onChange("123456");
+setValue("123456");
 getMasked("000-000");
 //123-456
 getMoneyMasked();
 //1.234,56
 
-onChangeMask("789012", "000-000");
+setMasked("789012", "000-000");
 getValue();
 //789-012
 
-onChangeMoney("345678");
+setMoneyMasked("345678");
 getValue();
 //3.456,78
 
@@ -243,7 +243,7 @@ The API is separated into Mask API where the mask functions are located.
 
 Form API methods, related to form, validation.
 
-Field API methods, used to manipulate stores.
+Store API methods, used to manipulate stores.
 
 ### Mask API
 
@@ -319,6 +319,248 @@ import { FormUser } from "./FormUser";
 const { getPlaceholder } = FormUser;
 const placeholder = getPlaceholder("SSS-0A00");
 //___-____
+```
+
+### Form API
+
+- Submit store values
+
+`submit(validate: (values: T) => T)`
+
+```ts
+import { FormUserFields, FormUser } from "./FormUser";
+
+const { submit } = FormUser;
+
+const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  submit((data) => {
+    const errors = { ...FormUserFields };
+    if (!data.name) errors.name = "name required";
+    //check for errors
+    if (JSON.stringify(errors) === JSON.stringify(TsFormUserInitalValues))
+      console.log("send data", data);
+
+    return errors;
+  });
+};
+```
+
+- Field store
+
+`field(name: string)`
+
+```ts
+import { FormUserFields, FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { setMasked } = field("document");
+
+setMasked("123456", "000-000");
+```
+
+### Store API
+
+- Get the store value
+
+`getValue(): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { getValue } = field("name");
+getValue();
+```
+
+- Get masked value without changing the store
+
+`getMasked(maskRule: string): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { getMasked } = field("name");
+getMasked("000-000");
+```
+
+- Get unmasked value without changing the store
+
+`getUnmasked(maskRule: string): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { getUnmasked } = field("name");
+getUnmasked();
+```
+
+- Get masked money without changing the store
+
+`getMoneyMasked(maskRule: string): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { getMoneyMasked } = field("name");
+getMoneyMasked();
+```
+
+- Get unmasked money without changing the store
+
+`getMoneyUnmasked(): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { getMoneyUnmasked } = field("name");
+getMoneyUnmasked();
+```
+
+- Get the store error
+
+`getError(): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { getError } = field("name");
+getError();
+```
+
+- Get all store values
+
+`getValues(): T`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { getValues } = FormUser;
+
+getValues();
+```
+
+- Get all store errors
+
+`getErrors(): T`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { getErrors } = FormUser;
+
+getErrors();
+```
+
+- Set the store value
+
+`setValue(value: string): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { setValue } = field("name");
+setValue("John Doe");
+```
+
+- Set the store with the masked value
+
+`setMasked(value: string): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { setMasked } = field("name");
+setMasked("123456", "000-000");
+```
+
+- Set the store with the masked money
+
+`setMoneyMasked(value: string): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { setMoneyMasked } = field("name");
+setMoneyMasked("123456");
+```
+
+- Set the store error
+
+`setError(value: string): string`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { setError } = field("name");
+setError("name required");
+```
+
+- Watch changes in the store value
+
+`subscribeValue(listener: (value: string, prevValue: string) => void): () => void`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { subscribeValue } = field("name");
+
+subscribeValue((value: string, prevValue: string) =>
+  console.log(value, prevValue)
+);
+```
+
+- Watch changes in the store error
+
+`subscribeError(listener: (value: string, prevValue: string) => void): () => void`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { field } = FormUser;
+const { subscribeError } = field("name");
+
+subscribeError((value: string, prevValue: string) =>
+  console.log(value, prevValue)
+);
+```
+
+- Watch changes in all store values
+
+`subscribeAllValues(listener: (value: string, prevValue: string) => void): () => void`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { subscribeAllValues } = FormUser;
+
+subscribeAllValues((value: string, prevValue: string) =>
+  console.log(value, prevValue)
+);
+```
+
+- Watch changes in all store errors
+
+`subscribeAllErrors(listener: (value: string, prevValue: string) => void): () => void`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { subscribeAllErrors } = FormUser;
+
+subscribeAllErrors((value: string, prevValue: string) =>
+  console.log(value, prevValue)
+);
 ```
 
 ![divider](./divider.png)

@@ -41,14 +41,14 @@ const createForm = <T extends Record<string, unknown>>(
       return { ...acc, [key]: getValueStores<T>(_errors[key]) };
     }, {} as T);
 
-  const subscribeValues = (
+  const subscribeAllValues = (
     listener: (value: string, prevValue: string) => void
   ) =>
     Object.keys(_values).map((key) =>
       subscribeStores(_values[`${key}`], listener)
     );
 
-  const subscribeErrors = (
+  const subscribeAllErrors = (
     listener: (value: string, prevValue: string) => void
   ) =>
     Object.keys(_errors).map((key) =>
@@ -66,8 +66,8 @@ const createForm = <T extends Record<string, unknown>>(
   return {
     getValues,
     getErrors,
-    subscribeValues,
-    subscribeErrors,
+    subscribeAllValues,
+    subscribeAllErrors,
     field: (name: string) =>
       field(name, _values, _errors, _rulesMask, _rulesMoney),
     submit,
