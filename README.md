@@ -43,10 +43,10 @@ Need for a solution that works on different stacks.
 - [Store](#store)
 - [Mask](#mask)
 - [TS Nano Form API](#ts-nano-form-api)
-  - [Mask API](#mask-api)
   - [Form API](#form-api)
   - [Store API](#store-api)
-- [Customize](#customize)
+  - [Mask API](#mask-api)
+- [Options](#Options)
 - [Examples](#examples)
 - [License](#license)
 
@@ -65,7 +65,7 @@ npm install ts-nano-form
 For each form, create a component with the createForm method.
 
 ```tsx
-import createTsMask from "ts-simple-mask";
+import createForm from "ts-nano-form";
 
 type FormUserType = {
   name: string;
@@ -134,7 +134,7 @@ Stores are used to store all values ​​and errors and then validated by the s
 Each change can be watched with the subscribe method.
 
 ```ts
-import createTsMask from "ts-simple-mask";
+import createForm from "ts-nano-form";
 
 type FormUserType = {
   document: string;
@@ -157,7 +157,7 @@ setValue, setError are to change store values.
 getValue, getError are to return the values.
 
 ```ts
-import createTsMask from "ts-simple-mask";
+import createForm from "ts-nano-form";
 
 type FormUserType = {
   document: string;
@@ -257,82 +257,6 @@ Form API methods, related to form, validation.
 
 Store API methods, used to manipulate stores.
 
-### Mask API
-
-- Mask text
-
-`mask(value: string, maskRule: string)`
-
-```ts
-import { FormUser } from "./FormUser";
-
-const { mask } = FormUser;
-mask("ABC1A23", "SSS-0A00");
-//ABC-1A23
-```
-
-- Unmask text
-
-`unmask(value: string)`
-
-```ts
-import { FormUser } from "./FormUser";
-
-const { unmask } = FormUser;
-const unmasked = unmask("ABC-1A23");
-//ABC1A23
-```
-
-- Mask money
-
-`maskMoney(value: string)`
-
-```ts
-import { FormUser } from "./FormUser";
-
-const { maskMoney } = FormUser;
-const masked = maskMoney("123456");
-//1.234,56
-```
-
-- Unmask money
-
-`unmaskMoney(value: string)`
-
-```ts
-import { FormUser } from "./FormUser";
-
-const { unmaskMoney } = FormUser;
-const umasked = unmaskMoney("1.234,56");
-//123456
-```
-
-- Get default masks
-
-`getMask(value: string, type: MaskType)`
-
-```ts
-import { FormUser } from "./FormUser";
-import { MaskType } from "ts-simple-mask";
-
-const { mask, getMask } = FormUser;
-const value = "469636036";
-mask(value, getMask(value, MaskType.DOCUMENT_BR));
-//46.963.603-6
-```
-
-- Get placeholder
-
-`getPlaceholder(maskRule: string)`
-
-```ts
-import { FormUser } from "./FormUser";
-
-const { getPlaceholder } = FormUser;
-const placeholder = getPlaceholder("SSS-0A00");
-//___-____
-```
-
 ### Form API
 
 - Submit store values
@@ -369,6 +293,50 @@ const { field } = FormUser;
 const { setMasked } = field("document");
 
 setMasked("123456", "000-000");
+```
+
+- Change mask rules
+
+`setRulesMask(rules: MaskOptions)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const maskOptions = {
+  map: new Map<string, MapOptions>([["9", { pattern: /\d/ }]]),
+};
+
+const { setRulesMask } = FormUser;
+setRulesMask(maskOptions);
+```
+
+- Change money rules
+
+`setRulesMoney(rules: MoneyOptions)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const moneyOptions = {
+  thousands: " ",
+  decimal: ".",
+  precision: 3,
+  prefix: "R$",
+};
+
+const { setRulesMask } = FormUser;
+setRulesMoney(moneyOptions);
+```
+
+- Get current rules
+
+`getRules()`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { getRules } = FormUser;
+getRules();
 ```
 
 ### Store API
@@ -575,11 +543,234 @@ subscribeAllErrors((value: string, prevValue: string) =>
 );
 ```
 
+### Mask API
+
+- Mask text
+
+`mask(value: string, maskRule: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { mask } = FormUser;
+mask("ABC1A23", "SSS-0A00");
+//ABC-1A23
+```
+
+- Unmask text
+
+`unmask(value: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { unmask } = FormUser;
+const unmasked = unmask("ABC-1A23");
+//ABC1A23
+```
+
+- Mask money
+
+`maskMoney(value: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { maskMoney } = FormUser;
+const masked = maskMoney("123456");
+//1.234,56
+```
+
+- Unmask money
+
+`unmaskMoney(value: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { unmaskMoney } = FormUser;
+const umasked = unmaskMoney("1.234,56");
+//123456
+```
+
+- Get default masks
+
+`getMask(value: string, type: MaskType)`
+
+```ts
+import { FormUser } from "./FormUser";
+import { maskType } from "ts-nano-form";
+
+const { mask, getMask } = FormUser;
+const value = "469636036";
+mask(value, getMask(value, MaskType.DOCUMENT_BR));
+//46.963.603-6
+```
+
+- Get placeholder
+
+`getPlaceholder(maskRule: string)`
+
+```ts
+import { FormUser } from "./FormUser";
+
+const { getPlaceholder } = FormUser;
+const placeholder = getPlaceholder("SSS-0A00");
+//___-____
+```
+
 ![divider](./divider.png)
 
-## Customize
+## Options
 
-Customize
+- Default options
+
+```ts
+const DEFAULT_MONEY_OPTIONS = {
+  thousands: ".",
+  decimal: ",",
+  precision: 2,
+};
+
+const DEFAULT_MASK_OPTIONS = {
+  map: new Map<string, MapOptions>([
+    ["0", { pattern: /\d/ }],
+    ["A", { pattern: /[a-zA-Z0-9]/ }],
+    ["S", { pattern: /[A-Za-z]/ }],
+    [
+      "X",
+      {
+        pattern: /[A-Za-z]/,
+        transform: (prevValue, newChar) => ({
+          prevValue,
+          newChar: newChar.toLocaleUpperCase(),
+        }),
+      },
+    ],
+    [
+      "x",
+      {
+        pattern: /[A-Za-z]/,
+        transform: (prevValue, newChar) => ({
+          prevValue,
+          newChar: newChar.toLocaleLowerCase(),
+        }),
+      },
+    ],
+    [
+      "Z",
+      {
+        pattern: /[a-zA-Z0-9]/,
+        transform: (prevValue, newChar) => ({
+          prevValue,
+          newChar: newChar.toLocaleUpperCase(),
+        }),
+      },
+    ],
+    [
+      "z",
+      {
+        pattern: /[a-zA-Z0-9]/,
+        transform: (prevValue, newChar) => ({
+          prevValue,
+          newChar: newChar.toLocaleLowerCase(),
+        }),
+      },
+    ],
+  ]),
+};
+```
+
+- Custom options
+
+```ts
+import createForm, { MapOptions } from "ts-nano-form";
+
+type FormUserType = {
+  document: string;
+};
+
+const moneyOptions = {
+  thousands: " ",
+  decimal: ".",
+  precision: 3,
+  prefix: "R$",
+};
+
+const maskOptions = {
+  map: new Map<string, MapOptions>([
+    [
+      "#",
+      {
+        pattern: /[A-Za-z]/,
+        transform: (prevValue, newChar) => ({
+          prevValue,
+          newChar: newChar.toLocaleUpperCase(),
+        }),
+      },
+    ],
+    ["9", { pattern: /\d/ }],
+  ]),
+};
+
+export const FormUserFields = {
+  document: "",
+};
+
+export const FormUser = createForm<FormUserType>(FormUserFields,{
+  maskOptions: maskOptions;
+  moneyOptions: moneyOptions;
+});
+
+const { mask, maskMoney, setRulesMask, setRulesMoney } = FormUser;
+
+mask("abcd", "####");
+//return ABCD
+
+maskMoney("123456789");
+//return R$12 345.689
+
+setRulesMask(maskOptions);
+setRulesMoney(moneyOptions);
+//change the mask rules
+```
+
+- Before Mask, After Mask
+
+```ts
+import createForm, { MapOptions } from "ts-nano-form";
+
+type FormUserType = {
+  document: string;
+};
+
+export const FormUserFields = {
+  document: "",
+};
+
+const FormUser = createForm<FormUserType>(FormUserFields, {
+  maskOptions: {
+    map: new Map<string, MapOptions>([["#", { pattern: /[A-Za-z]/ }]]),
+    beforeMask: (value) => (value === "hello" ? "helloworld" : value),
+    afterMask: (value) => (value.length > 10 ? value.slice(0, -1) : value),
+  },
+  moneyOptions: {
+    thousands: ".",
+    decimal: ",",
+    precision: 2,
+    beforeMask: (value) => (value === 1000 ? 1001 : value),
+    afterMask: (value) => "$" + value,
+  },
+});
+
+const { mask, maskMoney } = FormUser;
+
+mask("hello", "###########");
+//return helloworld
+
+maskMoney("1000");
+//return $10,00
+```
 
 ![divider](./divider.png)
 

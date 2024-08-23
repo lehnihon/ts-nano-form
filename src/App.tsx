@@ -7,8 +7,8 @@ import TsFormUser, { TsFormUserInitalValues } from "./createFormUser";
 
 function App() {
   const [count, setCount] = useState(0);
-  const { submit, mask } = TsFormUser;
-  console.log(mask("123456789", "000-000-000"), "test");
+  const { submit, maskMoney } = TsFormUser;
+  console.log(maskMoney("1000"));
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import { DEFAULT_MASK_OPTIONS, DEFAULT_MONEY_OPTIONS } from "../constants";
+import { DEFAULT_MASK_OPTIONS } from "../constants";
 import {
   getMask,
   getPlaceholder,
@@ -7,12 +7,13 @@ import {
   unmask,
   unmaskMoney,
 } from "../mask";
-import { TsFormOptions } from "../types";
+import { MaskOptions, MoneyOptions, TsFormOptions } from "../types";
 import {
   initStores,
   getValueStores,
   setErrorStores,
   subscribeStores,
+  validateMoneyRules,
 } from "../utils";
 import field from "./field";
 
@@ -28,8 +29,8 @@ const createForm = <T extends Record<string, unknown>>(
     (acc, key) => ({ ...acc, [key]: initStores(initialValues[key]) }),
     {}
   );
-  const _rulesMask = options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
-  const _rulesMoney = options?.moneyOptions ?? DEFAULT_MONEY_OPTIONS;
+  let _rulesMask = options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
+  let _rulesMoney = validateMoneyRules(options?.moneyOptions);
 
   const getValues = () =>
     Object.keys(_values).reduce((acc, key) => {
@@ -63,6 +64,18 @@ const createForm = <T extends Record<string, unknown>>(
     });
   };
 
+  const setRulesMask = (rules: MaskOptions) => {
+    _rulesMask = rules;
+  };
+
+  const setRulesMoney = (rules: MoneyOptions) => {
+    _rulesMoney = validateMoneyRules(rules);
+  };
+
+  const getRules = () => {
+    return { _rulesMask, _rulesMoney };
+  };
+
   return {
     getValues,
     getErrors,
@@ -78,6 +91,9 @@ const createForm = <T extends Record<string, unknown>>(
     unmaskMoney: (value: string) => unmaskMoney(value, _rulesMoney),
     getPlaceholder: (value: string) => getPlaceholder(value, _rulesMask),
     getMask,
+    setRulesMask,
+    setRulesMoney,
+    getRules,
   };
 };
 
