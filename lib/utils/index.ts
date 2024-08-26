@@ -72,6 +72,16 @@ export const initStores = (
       )
     : createStore(hasInitalValues ? `${value}` : "");
 
+export const findStoreByName = (
+  name: string,
+  values: Record<string, unknown>
+) => name.split(/[[+(.*?)\].]+/).reduce<any>((obj, i) => obj[i], values);
+
+export const resetField = (value: unknown): unknown =>
+  value instanceof Array
+    ? value.map((item) => Object.keys(item).map((key) => resetField(item[key])))
+    : (value as Store).set("");
+
 export const transformMask = (
   value: string,
   acc: string,

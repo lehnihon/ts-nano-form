@@ -13,27 +13,27 @@ const field = (
   const _storeError = splitName(name, errors);
 
   const getValue = (): string => {
-    return _storeValue.get() || "";
+    return _storeValue.get();
   };
 
   const getError = (): string => {
-    return _storeError.get() || "";
+    return _storeError.get();
   };
 
   const getMasked = (maskRule: string): string => {
-    return mask(_storeValue.get() ?? "", maskRule, rulesMask);
+    return mask(_storeValue.get(), maskRule, rulesMask);
   };
 
   const getUnmasked = (): string => {
-    return unmask(_storeValue.get() ?? "", rulesMask);
+    return unmask(_storeValue.get(), rulesMask);
   };
 
   const getMoneyMasked = (): string => {
-    return maskMoney(_storeValue.get() ?? "", rulesMoney);
+    return maskMoney(_storeValue.get(), rulesMoney);
   };
 
   const getMoneyUnmasked = (): string => {
-    return unmaskMoney(_storeValue.get() ?? "", rulesMoney);
+    return unmaskMoney(_storeValue.get(), rulesMoney);
   };
 
   const setError = (value: string): string => {

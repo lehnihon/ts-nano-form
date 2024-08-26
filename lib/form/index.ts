@@ -11,9 +11,10 @@ import { MaskOptions, MoneyOptions, TsFormOptions } from "../types";
 import {
   initStores,
   getValueStores,
-  setErrorStores,
   subscribeStores,
   validateMoneyRules,
+  findStoreByName,
+  resetField,
 } from "../utils";
 import field from "./field";
 
@@ -56,12 +57,18 @@ const createForm = <T extends Record<string, unknown>>(
       subscribeStores(_errors[`${key}`], listener)
     );
 
-  const submit = (validate: (values: T) => T) => {
+  const reset = (values: Record<string, unknown>) =>
+    Object.keys(values).map((key) => resetField(values[`${key}`]));
+
+  const submit = (validate: (values: T) => T | undefined) => {
     const storeValues = getValues();
     const newErrors = validate(storeValues);
-    Object.keys(_errors).map((key) => {
-      setErrorStores(_errors[key], newErrors[key]);
-    });
+    reset(_errors);
+    if (newErrors)
+      Object.keys(newErrors).map((key) => {
+        const store = findStoreByName(key, _errors);
+        store.set(newErrors[key] ?? "");
+      });
   };
 
   const setRulesMask = (rules: MaskOptions) => {

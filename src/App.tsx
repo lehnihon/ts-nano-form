@@ -3,26 +3,16 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import InputText from "./InputText";
-import TsFormUser, { TsFormUserInitalValues } from "./createFormUser";
+import TsFormUser, { userSchema } from "./createFormUser";
+import validateYup from "./validateYup";
 
 function App() {
   const [count, setCount] = useState(0);
-  const { submit, maskMoney } = TsFormUser;
-  console.log(maskMoney("1000"));
+  const { submit } = TsFormUser;
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    submit((data) => {
-      const errors = { ...TsFormUserInitalValues };
-
-      if (!data.name) errors.name = "name required";
-      if (!data.document) errors.document = "document required";
-      //check for errors
-      if (JSON.stringify(errors) === JSON.stringify(TsFormUserInitalValues))
-        console.log("send data", data);
-
-      return errors;
-    });
+    submit((data) => validateYup(data, userSchema));
   };
 
   return (
@@ -37,7 +27,9 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <form onSubmit={handleSubmit}>
+        <InputText field="name" />
         <InputText field="document" />
+        <InputText field="data.0.image" />
         <p>
           <input type="submit" value="Enviar" />
         </p>

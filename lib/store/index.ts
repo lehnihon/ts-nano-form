@@ -18,8 +18,8 @@ const createStore = (initial?: string): Store => {
     }
   };
 
-  const get = () => {
-    return _value;
+  const get = (): string => {
+    return _value || "";
   };
 
   const set = (newValue: string) => {

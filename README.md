@@ -48,6 +48,8 @@ Need for a solution that works on different stacks.
   - [Mask API](#mask-api)
 - [Options](#Options)
 - [Examples](#examples)
+  - [Vanilla JS](#vanilla-js)
+  - [React](#react)
 - [License](#license)
 
 ![divider](./divider.png)
@@ -777,6 +779,122 @@ maskMoney("1000");
 ## Examples
 
 Practical use examples
+
+### Vanilla JS
+
+```html
+<form class="form">
+  <input type="text" class="name" />
+  <input type="submit" value="submit" />
+</form>
+```
+
+```ts
+import createForm from "ts-nano-form";
+
+type FormUserType = {
+  name: string;
+};
+
+const FormUserFields = {
+  name: "",
+};
+
+const FormUser = createForm<FormUserType>(FormUserFields);
+
+const { field, submit } = FormUser;
+
+const nameInput = document.querySelector<HTMLInputElement>(".name");
+if (nameInput)
+  nameInput.addEventListener("input", function (e) {
+    if (e.target instanceof HTMLInputElement)
+      nameInput.value = field("name").setValue(e.target.value);
+  });
+
+const form = document.querySelector<HTMLFormElement>(".form");
+if (form)
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    submit((data) => {
+      let errors = { ...FormUserFields };
+      if (!data.name) errors.name = "name required";
+      //check for errors
+      if (JSON.stringify(errors) === JSON.stringify(FormUserFields))
+        console.log("send data", data);
+
+      return errors;
+    });
+  });
+```
+
+### React
+
+Create a component and use the useSyncExternalStore hook to watch value and error changes.
+
+```tsx
+import { useSyncExternalStore } from "react";
+import FormUser from "./createFormUser";
+
+interface InputTextProps {
+  field: string;
+}
+
+const InputText = ({ field }: InputTextProps) => {
+  const { subscribeValue, getValue, subscribeError, getError, setValue } =
+    FormUser.field(field);
+
+  const value = useSyncExternalStore(subscribeValue, getValue);
+  const error = useSyncExternalStore(subscribeError, getError);
+
+  return (
+    <>
+      <label>{field}</label>
+      <input value={value} onChange={(e) => setValue(e.target.value)} />
+      <p>{error}</p>
+    </>
+  );
+};
+
+export default InputText;
+```
+
+Validate the fields with the submit method.
+
+```tsx
+import InputText from "./InputText";
+import FormUser, { FormUserFields } from "./createFormUser";
+
+function Form() {
+  const { submit } = FormUser;
+
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    submit((data) => {
+      const errors = { ...FormUserFields };
+
+      if (!data.name) errors.name = "name required";
+      if (!data.document) errors.document = "document required";
+      //check for errors
+      if (JSON.stringify(errors) === JSON.stringify(TsFormUserInitalValues))
+        console.log("send data", data);
+
+      return errors;
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <InputText field="name" />
+      <InputText field="document" />
+      <p>
+        <input type="submit" value="Enviar" />
+      </p>
+    </form>
+  );
+}
+
+export default Form;
+```
 
 ![divider](./divider.png)
 

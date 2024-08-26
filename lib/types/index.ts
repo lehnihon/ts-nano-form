@@ -3,7 +3,7 @@ export interface Store {
     listener: (value: string, prevValue: string) => void
   ) => () => void;
   emit: (value: string, prevValue: string) => void;
-  get: () => string | undefined;
+  get: () => string;
   set: (newValue: string) => void;
 }
 
