@@ -61,7 +61,7 @@ const createForm = <T extends Record<string, unknown>>(
     Object.keys(values).map((key) => resetField(values[`${key}`]));
 
   const submit = (
-    validate: (values: T) => Record<string, string> | undefined
+    validate: (values: T) => Record<string, unknown> | undefined
   ) => {
     const storeValues = getValues();
     const newErrors = validate(storeValues);
