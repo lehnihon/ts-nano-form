@@ -5,6 +5,7 @@ import {
   applyMask,
   applyMaskMoney,
   clearMoneyValue,
+  findStoreByPath,
   getValueStores,
   initStores,
   instanceOfStore,
@@ -13,7 +14,6 @@ import {
   scapeRegex,
   setErrorStores,
   splitIntegerDecimal,
-  splitName,
   subscribeStores,
   transformMask,
 } from ".";
@@ -29,7 +29,7 @@ describe("Utils Form", () => {
     const values = {
       document: createStore("abc"),
     };
-    const store = splitName("document", values);
+    const store = findStoreByPath(values, "document");
     expect(store.get()).toBe("abc");
   });
 
@@ -40,7 +40,7 @@ describe("Utils Form", () => {
         { name: createStore("b"), cpf: createStore("456") },
       ],
     };
-    const store = splitName("document.0.cpf", values);
+    const store = findStoreByPath(values, "document.0.cpf");
     expect(store.get()).toBe("123");
   });
 
@@ -55,7 +55,7 @@ describe("Utils Form", () => {
         { name: createStore("b"), cpf: createStore("456") },
       ],
     };
-    const store = splitName("document.0.extra.0.test", values);
+    const store = findStoreByPath(values, "document.0.extra.0.test");
     expect(store.get()).toBe("def");
   });
 

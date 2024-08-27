@@ -14,7 +14,7 @@ import {
   subscribeStores,
   validateMoneyRules,
   resetField,
-  get,
+  findStoreByPath,
 } from "../utils";
 import field from "./field";
 
@@ -60,14 +60,16 @@ const createForm = <T extends Record<string, unknown>>(
   const reset = (values: Record<string, unknown>) =>
     Object.keys(values).map((key) => resetField(values[`${key}`]));
 
-  const submit = (validate: (values: T) => T | undefined) => {
+  const submit = (
+    validate: (values: T) => Record<string, string> | undefined
+  ) => {
     const storeValues = getValues();
     const newErrors = validate(storeValues);
     reset(_errors);
     if (newErrors)
       Object.keys(newErrors).map((key) => {
-        const store = get(_errors, key);
-        store.set(newErrors[key] ?? "");
+        const store = findStoreByPath(_errors, key);
+        store.set(newErrors[key]);
       });
   };
 

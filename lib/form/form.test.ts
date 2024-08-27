@@ -55,7 +55,7 @@ describe("Form", () => {
     TsForm.submit((data) => ({
       name: data?.name ? "" : "required name",
       document: data?.name ? "" : "required document",
-      data: [{ image: "" }, { image: "" }],
+      "data.0.image": "test",
     }));
     expect(TsForm.field("name").getError()).toBe("required name");
   });
