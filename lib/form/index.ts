@@ -13,8 +13,8 @@ import {
   getValueStores,
   subscribeStores,
   validateMoneyRules,
-  findStoreByName,
   resetField,
+  get,
 } from "../utils";
 import field from "./field";
 
@@ -66,7 +66,7 @@ const createForm = <T extends Record<string, unknown>>(
     reset(_errors);
     if (newErrors)
       Object.keys(newErrors).map((key) => {
-        const store = findStoreByName(key, _errors);
+        const store = get(_errors, key);
         store.set(newErrors[key] ?? "");
       });
   };

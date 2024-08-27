@@ -8,26 +8,6 @@ export const instanceOfStore = (object: any): object is Store => {
   return "subscribe" in object;
 };
 
-export const splitName = (
-  name: string,
-  values: Record<string, unknown>
-): Store => {
-  const nameSplit = name.split(".");
-  if (nameSplit.length === 1) {
-    return values[name] as Store;
-  }
-  const firstName = nameSplit.shift();
-  return splitNameRecursive(values[firstName!], nameSplit);
-};
-
-const splitNameRecursive = (values: any, nameSplit: string[]): any => {
-  const firstName = nameSplit.shift();
-  if (!firstName) return;
-  return instanceOfStore(values[firstName])
-    ? values[firstName!]
-    : splitNameRecursive(values[firstName!], nameSplit);
-};
-
 export const getValueStores = <T>(value: unknown): unknown =>
   value instanceof Array
     ? value.map((item) =>
@@ -72,15 +52,52 @@ export const initStores = (
       )
     : createStore(hasInitalValues ? `${value}` : "");
 
-export const findStoreByName = (
-  name: string,
-  values: Record<string, unknown>
-) => name.split(/[[+(.*?)\].]+/).reduce<any>((obj, i) => obj[i], values);
+export const findStoreByPath = (
+  obj: Record<string, any>,
+  path: string | string[]
+) => {
+  if (!has(obj, path)) set(obj, path, createStore());
+  return get(obj, path);
+};
+
+export const has = (obj: Record<string, any>, path: string | string[]) =>
+  !!pathToArray(path).reduce((prevObj, key) => prevObj && prevObj[key], obj);
+
+export const get = (
+  obj: Record<string, any>,
+  path: string | string[],
+  defValue?: string
+) => pathToArray(path).reduce((acc, key) => acc && acc[key], obj) ?? defValue;
+
+export const set = (
+  obj: Record<string, any>,
+  path: string | string[],
+  value: any
+) => {
+  pathToArray(path).reduce((acc, key, i, path) => {
+    if (acc[key] === undefined) acc[key] = {};
+    if (i === path.length - 1) acc[key] = value;
+    return acc[key];
+  }, obj);
+};
+
+const pathToArray = (path: string | string[]) =>
+  Array.isArray(path) ? path : path.match(/([^[.\]])+/g) || [];
 
 export const resetField = (value: unknown): unknown =>
   value instanceof Array
     ? value.map((item) => Object.keys(item).map((key) => resetField(item[key])))
     : (value as Store).set("");
+
+export const getStores = (
+  values: Record<string, unknown>,
+  prefix = ""
+): Array<Store> =>
+  Object.entries(values).flatMap(([k, v]) =>
+    Object(v) === v
+      ? getStores(v as Record<string, unknown>, `${prefix}${k}.`)
+      : [v as Store]
+  );
 
 export const transformMask = (
   value: string,

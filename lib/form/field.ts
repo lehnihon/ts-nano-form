@@ -1,6 +1,6 @@
 import { mask, maskMoney, unmask, unmaskMoney } from "../mask";
-import { MaskOptions, MoneyOptions } from "../types";
-import { splitName } from "../utils";
+import { MaskOptions, MoneyOptions, Store } from "../types";
+import { findStoreByPath } from "../utils";
 
 const field = (
   name: string,
@@ -9,8 +9,8 @@ const field = (
   rulesMask: MaskOptions,
   rulesMoney: MoneyOptions
 ) => {
-  const _storeValue = splitName(name, values);
-  const _storeError = splitName(name, errors);
+  const _storeValue = findStoreByPath(values, name) as Store;
+  const _storeError = findStoreByPath(errors, name) as Store;
 
   const getValue = (): string => {
     return _storeValue.get();
