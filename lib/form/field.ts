@@ -1,6 +1,6 @@
 import { mask, maskMoney, unmask, unmaskMoney } from "../mask";
 import { MaskOptions, MoneyOptions, Store } from "../types";
-import { findStoreByPath } from "../utils";
+import { findStoreByPath, set } from "../utils";
 
 const field = (
   name: string,
@@ -11,6 +11,7 @@ const field = (
 ) => {
   const _storeValue = findStoreByPath(values, name) as Store;
   const _storeError = findStoreByPath(errors, name) as Store;
+  set(values, "data.0.test", 1);
 
   const getValue = (): string => {
     return _storeValue.get();

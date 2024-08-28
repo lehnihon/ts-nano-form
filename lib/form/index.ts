@@ -7,14 +7,13 @@ import {
   unmask,
   unmaskMoney,
 } from "../mask";
+import createStore from "../store";
 import { MaskOptions, MoneyOptions, TsFormOptions } from "../types";
 import {
-  initStores,
-  getValueStores,
-  subscribeStores,
   validateMoneyRules,
-  resetField,
   findStoreByPath,
+  iterateStore,
+  instanceOfStore,
 } from "../utils";
 import field from "./field";
 
@@ -22,43 +21,41 @@ const createForm = <T extends Record<string, unknown>>(
   initialValues: T,
   options?: TsFormOptions
 ) => {
-  const _values: Record<string, unknown> = Object.keys(initialValues).reduce(
-    (acc, key) => ({ ...acc, [key]: initStores(initialValues[key], true) }),
-    {}
+  const _values: Record<string, unknown> = iterateStore(
+    initialValues,
+    (value) => createStore(value)
   );
-  const _errors: Record<string, unknown> = Object.keys(initialValues).reduce(
-    (acc, key) => ({ ...acc, [key]: initStores(initialValues[key]) }),
-    {}
+
+  const _errors: Record<string, unknown> = iterateStore(initialValues, () =>
+    createStore()
   );
   let _rulesMask = options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
   let _rulesMoney = validateMoneyRules(options?.moneyOptions);
 
   const getValues = () =>
-    Object.keys(_values).reduce((acc, key) => {
-      return { ...acc, [key]: getValueStores<T>(_values[key]) };
-    }, {} as T);
+    iterateStore(_values, (value) => instanceOfStore(value) && value.get());
 
   const getErrors = () =>
-    Object.keys(_errors).reduce((acc, key) => {
-      return { ...acc, [key]: getValueStores<T>(_errors[key]) };
-    }, {} as T);
+    iterateStore(_errors, (value) => instanceOfStore(value) && value.get());
 
   const subscribeAllValues = (
     listener: (value: string, prevValue: string) => void
   ) =>
-    Object.keys(_values).map((key) =>
-      subscribeStores(_values[`${key}`], listener)
+    iterateStore(
+      _values,
+      (value) => instanceOfStore(value) && value.subscribe(listener)
     );
 
   const subscribeAllErrors = (
     listener: (value: string, prevValue: string) => void
   ) =>
-    Object.keys(_errors).map((key) =>
-      subscribeStores(_errors[`${key}`], listener)
+    iterateStore(
+      _errors,
+      (value) => instanceOfStore(value) && value.subscribe(listener)
     );
 
   const reset = (values: Record<string, unknown>) =>
-    Object.keys(values).map((key) => resetField(values[`${key}`]));
+    iterateStore(values, (value) => instanceOfStore(value) && value.set(""));
 
   const submit = (
     validate: (values: T) => Record<string, unknown> | undefined

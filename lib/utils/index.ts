@@ -5,52 +5,33 @@ import { MoneyOptions, MapOptions, MaskOptions } from "../types";
 import createStore from "../store";
 
 export const instanceOfStore = (object: any): object is Store => {
-  return "subscribe" in object;
+  return typeof object === "object" && "subscribe" in object;
 };
 
-export const getValueStores = <T>(value: unknown): unknown =>
-  value instanceof Array
-    ? value.map((item) =>
-        Object.keys(item).reduce((acc, key) => {
-          return { ...acc, [key]: getValueStores(item[key]) };
-        }, {} as T)
-      )
-    : (value as Store).get();
-
-export const setErrorStores = (value: unknown, error: unknown): unknown =>
-  value instanceof Array
-    ? value.map((item, i) =>
-        Object.keys(item).map((j: any) => {
-          setErrorStores(item[j], (error as [])[i][j]);
-        })
-      )
-    : (value as Store).set(`${error || ""}`);
-
-export const subscribeStores = (
-  value: unknown,
-  listener: (value: string, prevValue: string) => void
-): unknown =>
-  value instanceof Array
-    ? value.map((item) =>
-        Object.keys(item).map((key) => subscribeStores(item[key], listener))
-      )
-    : (value as Store).subscribe(listener);
-
-export const initStores = (
-  value: unknown,
-  hasInitalValues: boolean = false
+export const iterateStore = (
+  obj: Record<string, any>,
+  callback: (value: any) => void
 ): any =>
-  value instanceof Array
-    ? value.map((item) =>
+  Object.keys(obj).reduce(
+    (acc, key) => ({ ...acc, [key]: iterateDeepStore(obj[key], callback) }),
+    {}
+  );
+
+export const iterateDeepStore = (
+  obj: Record<string, any>,
+  callback: (value: any) => any
+): any =>
+  obj instanceof Array
+    ? obj.map((item) =>
         Object.keys(item).reduce(
           (acc, key) => ({
             ...acc,
-            [key]: initStores(item[key], hasInitalValues),
+            [key]: iterateDeepStore(item[key], callback),
           }),
           {}
         )
       )
-    : createStore(hasInitalValues ? `${value}` : "");
+    : callback(obj);
 
 export const findStoreByPath = (
   obj: Record<string, any>,
@@ -83,21 +64,6 @@ export const set = (
 
 const pathToArray = (path: string | string[]) =>
   Array.isArray(path) ? path : path.match(/([^[.\]])+/g) || [];
-
-export const resetField = (value: unknown): unknown =>
-  value instanceof Array
-    ? value.map((item) => Object.keys(item).map((key) => resetField(item[key])))
-    : (value as Store).set("");
-
-export const getStores = (
-  values: Record<string, unknown>,
-  prefix = ""
-): Array<Store> =>
-  Object.entries(values).flatMap(([k, v]) =>
-    Object(v) === v
-      ? getStores(v as Record<string, unknown>, `${prefix}${k}.`)
-      : [v as Store]
-  );
 
 export const transformMask = (
   value: string,

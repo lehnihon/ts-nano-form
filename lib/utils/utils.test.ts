@@ -6,15 +6,12 @@ import {
   applyMaskMoney,
   clearMoneyValue,
   findStoreByPath,
-  getValueStores,
-  initStores,
   instanceOfStore,
+  iterateStore,
   onlyDigits,
   removeSpecialChar,
   scapeRegex,
-  setErrorStores,
   splitIntegerDecimal,
-  subscribeStores,
   transformMask,
 } from ".";
 import { DEFAULT_MASK_OPTIONS, DEFAULT_MONEY_OPTIONS } from "../constants";
@@ -25,7 +22,7 @@ describe("Utils Form", () => {
     expect(instanceOfStore(store)).toBe(true);
   });
 
-  test("splitName", () => {
+  test("findStoreByPath", () => {
     const values = {
       document: createStore("abc"),
     };
@@ -33,7 +30,7 @@ describe("Utils Form", () => {
     expect(store.get()).toBe("abc");
   });
 
-  test("splitName array", () => {
+  test("findStoreByPath array", () => {
     const values = {
       document: [
         { name: createStore("a"), cpf: createStore("123") },
@@ -44,7 +41,7 @@ describe("Utils Form", () => {
     expect(store.get()).toBe("123");
   });
 
-  test("splitName multiarray", () => {
+  test("findStoreByPath multiarray", () => {
     const values = {
       document: [
         {
@@ -59,146 +56,34 @@ describe("Utils Form", () => {
     expect(store.get()).toBe("def");
   });
 
-  test("getValueStores", () => {
-    const objValues = getValueStores(createStore("a"));
-    expect(objValues).toStrictEqual("a");
+  test("iterateStore", () => {
+    const values = { a: createStore("a") };
+    const objValues = iterateStore(
+      values,
+      (value) => instanceOfStore(value) && value.get()
+    );
+    expect(objValues).toStrictEqual({ a: "a" });
   });
 
-  test("getValueStores array", () => {
-    const values = [
-      { name: createStore("a"), cpf: createStore("123") },
-      {
-        name: createStore("b"),
-        cpf: createStore("456"),
-      },
-    ];
-    const objValues = getValueStores(values);
-    expect(objValues).toStrictEqual([
-      {
-        cpf: "123",
-        name: "a",
-      },
-      {
-        cpf: "456",
-        name: "b",
-      },
-    ]);
-  });
-
-  test("getValueStores multiarray", () => {
-    const values = [
-      { name: createStore("a"), cpf: createStore("123") },
-      {
-        name: createStore("b"),
-        cpf: createStore("456"),
-        extra: [
-          {
-            test: createStore("1"),
-          },
-        ],
-      },
-    ];
-    const objValues = getValueStores(values);
-    expect(objValues).toStrictEqual([
-      {
-        cpf: "123",
-        name: "a",
-      },
-      {
-        cpf: "456",
-        name: "b",
-        extra: [{ test: "1" }],
-      },
-    ]);
-  });
-
-  test("setErrorStores", () => {
-    const errors = createStore();
-    const newErrors = "erro";
-    setErrorStores(errors, newErrors);
-    expect(errors.get()).toStrictEqual("erro");
-  });
-
-  test("setErrorStores array", () => {
-    const errors = [
-      { name: createStore("a"), cpf: createStore("123") },
-      {
-        name: createStore("b"),
-        cpf: createStore("456"),
-      },
-    ];
-    const newErrors = [
-      { name: "erro a", cpf: "erro b" },
-      {
-        name: "erro c",
-        cpf: "erro d",
-      },
-    ];
-    setErrorStores(errors, newErrors);
-    expect(errors[0].name.get()).toStrictEqual("erro a");
-  });
-
-  test("setErrorStores multiarray", () => {
-    const errors = [
-      { name: createStore("a"), cpf: createStore("123") },
-      {
-        name: createStore("b"),
-        cpf: createStore("456"),
-        multi: [{ test: createStore("456") }],
-      },
-    ];
-    const newErrors = [
-      { name: "erro a", cpf: "erro b" },
-      {
-        name: "erro c",
-        cpf: "erro d",
-        multi: [{ test: "erro f" }],
-      },
-    ];
-    setErrorStores(errors, newErrors);
-    expect(errors[1].multi![0].test.get()).toStrictEqual("erro f");
-  });
-
-  test("subscribeStores", () => {
-    const values = createStore("a");
-    const store = createStore("1");
-    const listener = (value: string) => {
-      if (value === "b") store.set("2");
+  test("iterateStore array", () => {
+    const values = {
+      name: createStore("b"),
+      cpf: createStore("456"),
+      extra: [
+        {
+          test: createStore("1"),
+        },
+      ],
     };
-    subscribeStores(values, listener);
-    expect(store.get()).toBe("1");
-    values.set("b");
-    expect(store.get()).toBe("2");
-  });
-
-  test("subscribeStores array", () => {
-    const values = [
-      { name: createStore("a"), cpf: createStore("123") },
-      {
-        name: createStore("b"),
-        cpf: createStore("456"),
-      },
-    ];
-    const store = createStore("3");
-    const listener = (value: string) => {
-      if (value === "b") store.set("4");
-    };
-    subscribeStores(values, listener);
-    expect(store.get()).toBe("3");
-    values[1].name.set("b");
-    expect(store.get()).toBe("4");
-  });
-
-  test("initStores", () => {
-    const values = "2";
-    const store = initStores(values, true);
-    expect(store.get()).toBe("2");
-  });
-
-  test("initStores array", () => {
-    const values = [{ name: "1" }];
-    const store = initStores(values, true);
-    expect(store[0].name.get()).toBe("1");
+    const objValues = iterateStore(
+      values,
+      (value) => instanceOfStore(value) && value.get()
+    );
+    expect(objValues).toStrictEqual({
+      name: "b",
+      cpf: "456",
+      extra: [{ test: "1" }],
+    });
   });
 });
 
