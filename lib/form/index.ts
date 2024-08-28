@@ -25,7 +25,6 @@ const createForm = <T extends Record<string, unknown>>(
     initialValues,
     (value) => createStore(value)
   );
-
   const _errors: Record<string, unknown> = iterateStore(initialValues, () =>
     createStore()
   );
