@@ -50,6 +50,7 @@ Need for a solution that works on different stacks.
 - [Examples](#examples)
   - [Vanilla JS](#vanilla-js)
   - [React](#react)
+  - [Validators](#validators)
 - [License](#license)
 
 ![divider](./divider.png)

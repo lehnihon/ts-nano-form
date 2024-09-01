@@ -8,7 +8,7 @@ import {
   unmaskMoney,
 } from "../mask";
 import createStore from "../store";
-import { MaskOptions, MoneyOptions, TsFormOptions } from "../types";
+import { CreateForm, MaskOptions, MoneyOptions, TsFormOptions } from "../types";
 import {
   validateMoneyRules,
   findStoreByPath,
@@ -20,14 +20,9 @@ import field from "./field";
 const createForm = <T extends Record<string, unknown>>(
   initialValues: T,
   options?: TsFormOptions
-) => {
-  const _values: Record<string, unknown> = iterateStore(
-    initialValues,
-    (value) => createStore(value)
-  );
-  const _errors: Record<string, unknown> = iterateStore(initialValues, () =>
-    createStore()
-  );
+): CreateForm<T> => {
+  const _values = iterateStore(initialValues, (value) => createStore(value));
+  const _errors = iterateStore(initialValues, () => createStore());
   let _rulesMask = options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
   let _rulesMoney = validateMoneyRules(options?.moneyOptions);
 
@@ -53,8 +48,9 @@ const createForm = <T extends Record<string, unknown>>(
       (value) => instanceOfStore(value) && value.subscribe(listener)
     );
 
-  const reset = (values: Record<string, unknown>) =>
+  const reset = (values: Record<string, unknown>) => {
     iterateStore(values, (value) => instanceOfStore(value) && value.set(""));
+  };
 
   const submit = (
     validate: (values: T) => Record<string, unknown> | undefined
@@ -78,7 +74,7 @@ const createForm = <T extends Record<string, unknown>>(
   };
 
   const getRules = () => {
-    return { _rulesMask, _rulesMoney };
+    return { rulesMask: _rulesMask, rulesMoney: _rulesMoney };
   };
 
   return {
@@ -86,6 +82,7 @@ const createForm = <T extends Record<string, unknown>>(
     getErrors,
     subscribeAllValues,
     subscribeAllErrors,
+    reset,
     field: (name: string) =>
       field(name, _values, _errors, _rulesMask, _rulesMoney),
     submit,
