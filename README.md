@@ -50,6 +50,7 @@ Need for a solution that works on different stacks.
 - [Examples](#examples)
   - [Vanilla JS](#vanilla-js)
   - [React](#react)
+  - [Angular](#angular)
   - [Validators](#validators)
     - [Yup](#yup)
 - [License](#license)
@@ -896,6 +897,72 @@ function Form() {
 }
 
 export default Form;
+```
+
+### Angular
+
+Html form
+
+```html
+<div>
+  <div>
+    <label>Name</label>
+    <input type="text" name="name" (input)="changeName($event)" />
+  </div>
+  <div>{{ error }}</div>
+  <button (click)="submitData()">Send</button>
+</div>
+```
+
+Component
+
+```tsx
+import { Component, OnInit } from "@angular/core";
+import createForm from "ts-nano-form";
+
+type FormUserType = {
+  name: string;
+};
+
+const FormUserFields = {
+  name: "",
+};
+
+const FormUser = createForm<FormUserType>(FormUserFields);
+
+const { field, submit } = FormUser;
+
+@Component({
+  selector: "app-form",
+  templateUrl: "./form.component.html",
+  styleUrls: ["./form.component.scss"],
+})
+export class FormComponent implements OnInit {
+  public value: string = "";
+  public error: string = "";
+  public fieldName = field("name");
+
+  ngOnInit() {
+    this.fieldName.subscribeValue((value) => (this.value = value));
+    this.fieldName.subscribeError((value) => (this.error = value));
+  }
+
+  changeName(e: any) {
+    this.fieldName.setValue(e.target.value);
+  }
+
+  submitData() {
+    submit((data) => {
+      let errors = { ...FormUserFields };
+      if (!data.name) errors.name = "name required";
+      //check for errors
+      if (JSON.stringify(errors) === JSON.stringify(FormUserFields))
+        console.log("send data", data);
+
+      return errors;
+    });
+  }
+}
 ```
 
 ### Validators
