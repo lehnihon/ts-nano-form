@@ -8,7 +8,12 @@ import {
   unmaskMoney,
 } from "../mask";
 import createStore from "../store";
-import { CreateForm, MaskOptions, MoneyOptions, TsFormOptions } from "../types";
+import {
+  CreateForm,
+  CreateFormProps,
+  MaskOptions,
+  MoneyOptions,
+} from "../types";
 import {
   validateMoneyRules,
   findStoreByPath,
@@ -17,12 +22,14 @@ import {
 } from "../utils";
 import field from "./field";
 
-const createForm = <T extends Record<string, unknown>>(
-  initialValues: T,
-  options?: TsFormOptions
-): CreateForm<T> => {
-  const _values = iterateStore(initialValues, (value) => createStore(value));
-  const _errors = iterateStore(initialValues, () => createStore());
+const createForm = <T extends Record<string, unknown>>({
+  initialValues,
+  options,
+}: CreateFormProps<T>): CreateForm<T> => {
+  const _values = iterateStore(initialValues || ({} as T), (value) =>
+    createStore(value)
+  );
+  const _errors = iterateStore(initialValues || ({} as T), () => createStore());
   let _rulesMask = options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
   let _rulesMoney = validateMoneyRules(options?.moneyOptions);
 
@@ -57,6 +64,7 @@ const createForm = <T extends Record<string, unknown>>(
   ) => {
     const storeValues = getValues();
     const newErrors = validate(storeValues);
+    console.log(storeValues);
     reset(_errors);
     if (newErrors)
       Object.keys(newErrors).map((key) => {

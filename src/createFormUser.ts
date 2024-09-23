@@ -19,13 +19,15 @@ export const TsFormUserInitalValues = {
   data: [{ image: "" }],
 };
 
-const TsFormUser = createForm<FormUser>(TsFormUserInitalValues, {
-  moneyOptions: {
-    thousands: ".",
-    decimal: ",",
-    precision: 2,
-    beforeMask: (value) => (value === 1000 ? 1001 : value),
-    afterMask: (value) => "$" + value,
+const TsFormUser = createForm<FormUser>({
+  options: {
+    moneyOptions: {
+      thousands: ".",
+      decimal: ",",
+      precision: 2,
+      beforeMask: (value) => (value === 1000 ? 1001 : value),
+      afterMask: (value) => "$" + value,
+    },
   },
 });
 

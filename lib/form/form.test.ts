@@ -2,9 +2,11 @@ import { describe, test, expect } from "vitest";
 import createForm from ".";
 
 const TsForm = createForm({
-  name: "Leandro",
-  document: "123456",
-  data: [{ image: "a" }, { image: "b" }],
+  initialValues: {
+    name: "Leandro",
+    document: "123456",
+    data: [{ image: "a" }, { image: "b" }],
+  },
 });
 
 describe("Form", () => {

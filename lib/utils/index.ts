@@ -4,34 +4,20 @@ import { DEFAULT_MONEY_OPTIONS } from "../constants";
 import { MoneyOptions, MapOptions, MaskOptions } from "../types";
 import createStore from "../store";
 
-export const instanceOfStore = (object: any): object is Store => {
-  return typeof object === "object" && "subscribe" in object;
-};
+export const instanceOfStore = (object: any): object is Store =>
+  typeof object === "object" && "subscribe" in object;
 
 export const iterateStore = (
   obj: Record<string, any>,
   callback: (value: any) => void
-): any =>
-  Object.keys(obj).reduce(
-    (acc, key) => ({ ...acc, [key]: iterateDeepStore(obj[key], callback) }),
-    {}
-  );
-
-export const iterateDeepStore = (
-  obj: Record<string, any>,
-  callback: (value: any) => any
-): any =>
-  obj instanceof Array
-    ? obj.map((item) =>
-        Object.keys(item).reduce(
-          (acc, key) => ({
-            ...acc,
-            [key]: iterateDeepStore(item[key], callback),
-          }),
-          {}
-        )
-      )
-    : callback(obj);
+): any => {
+  const objClone = copyObj(obj);
+  if (!isObject(obj) || instanceOfStore(obj)) return callback(obj);
+  for (const x in obj) {
+    objClone[x] = iterateStore(obj[x], callback);
+  }
+  return objClone;
+};
 
 export const findStoreByPath = (
   obj: Record<string, any>,
@@ -56,7 +42,7 @@ export const set = (
   value: any
 ) => {
   pathToArray(path).reduce((acc, key, i, path) => {
-    if (acc[key] === undefined) acc[key] = {};
+    if (acc[key] === undefined) acc[key] = isNumber(key) ? {} : [];
     if (i === path.length - 1) acc[key] = value;
     return acc[key];
   }, obj);
@@ -152,3 +138,10 @@ export const removeSpecialChar = (value?: string) =>
 
 export const onlyDigits = (value?: string) =>
   (value || "").replace(/[^0-9]/g, "");
+
+export const isObject = (value: any) =>
+  typeof value === "object" && value !== null;
+
+export const isNumber = (value: string) => /^-?\d+$/.test(value);
+
+export const copyObj = (obj: any) => JSON.parse(JSON.stringify(obj));

@@ -82,7 +82,7 @@ export const FormUserFields = {
   document: "",
 };
 
-export const FormUser = createForm<FormUserType>(FormUserFields);
+export const FormUser = createForm<FormUserType>();
 ```
 
 Values ​​and errors are accessed by get methods getValue and getError.
@@ -149,7 +149,7 @@ export const FormUserFields = {
   document: "12345",
 };
 
-export const FormUser = createForm<FormUserType>(FormUserFields);
+export const FormUser = createForm<FormUserType>();
 const { subscribeValue, setValue } = field("document");
 subscribeValue((value: string, prevValue: string) =>
   console.log(value, prevValue)
@@ -172,7 +172,7 @@ export const FormUserFields = {
   document: "",
 };
 
-export const FormUser = createForm<FormUserType>(FormUserFields);
+export const FormUser = createForm<FormUserType>();
 const { setValue, setValueMasked, getValue } = field("document");
 setValueMasked("12345");
 getValue();
@@ -722,9 +722,12 @@ export const FormUserFields = {
   document: "",
 };
 
-export const FormUser = createForm<FormUserType>(FormUserFields,{
-  maskOptions: maskOptions;
-  moneyOptions: moneyOptions;
+export const FormUser = createForm<FormUserType>({
+  initialValues: FormUserFields,
+  options: {
+    maskOptions,
+    moneyOptions,
+  },
 });
 
 const { mask, maskMoney, setRulesMask, setRulesMoney } = FormUser;
@@ -749,22 +752,29 @@ type FormUserType = {
   document: string;
 };
 
+const moneyOptions = {
+  thousands: ".",
+  decimal: ",",
+  precision: 2,
+  beforeMask: (value) => (value === 1000 ? 1001 : value),
+  afterMask: (value) => "$" + value,
+};
+
+const maskOptions = {
+  map: new Map<string, MapOptions>([["#", { pattern: /[A-Za-z]/ }]]),
+  beforeMask: (value) => (value === "hello" ? "helloworld" : value),
+  afterMask: (value) => (value.length > 10 ? value.slice(0, -1) : value),
+};
+
 export const FormUserFields = {
   document: "",
 };
 
-const FormUser = createForm<FormUserType>(FormUserFields, {
-  maskOptions: {
-    map: new Map<string, MapOptions>([["#", { pattern: /[A-Za-z]/ }]]),
-    beforeMask: (value) => (value === "hello" ? "helloworld" : value),
-    afterMask: (value) => (value.length > 10 ? value.slice(0, -1) : value),
-  },
-  moneyOptions: {
-    thousands: ".",
-    decimal: ",",
-    precision: 2,
-    beforeMask: (value) => (value === 1000 ? 1001 : value),
-    afterMask: (value) => "$" + value,
+const FormUser = createForm<FormUserType>({
+  initialValues: FormUserFields,
+  options: {
+    maskOptions,
+    moneyOptions,
   },
 });
 
@@ -803,7 +813,7 @@ const FormUserFields = {
   name: "",
 };
 
-const FormUser = createForm<FormUserType>(FormUserFields);
+const FormUser = createForm<FormUserType>();
 
 const { field, submit } = FormUser;
 
@@ -928,7 +938,7 @@ const FormUserFields = {
   name: "",
 };
 
-const FormUser = createForm<FormUserType>(FormUserFields);
+const FormUser = createForm<FormUserType>();
 
 const { field, submit } = FormUser;
 

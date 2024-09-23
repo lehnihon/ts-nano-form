@@ -29,6 +29,11 @@ export interface CreateForm<T> {
   getMask: (value: string, type: MaskType) => string;
 }
 
+export interface CreateFormProps<T> {
+  initialValues?: T;
+  options?: TsFormOptions;
+}
+
 export interface Field {
   getValue: () => string;
   getMasked: (maskRule: string) => string;
