@@ -911,7 +911,7 @@ export default Form;
 
 ### Angular
 
-Html form
+Input html
 
 ```html
 <div>
@@ -924,23 +924,14 @@ Html form
 </div>
 ```
 
-Component
+Input component
 
-```tsx
+```ts
 import { Component, OnInit } from "@angular/core";
 import createForm from "ts-nano-form";
+import FormUser from "./createFormUser";
 
-type FormUserType = {
-  name: string;
-};
-
-const FormUserFields = {
-  name: "",
-};
-
-const FormUser = createForm<FormUserType>();
-
-const { field, submit } = FormUser;
+const { field } = FormUser;
 
 @Component({
   selector: "app-form",
@@ -948,18 +939,58 @@ const { field, submit } = FormUser;
   styleUrls: ["./form.component.scss"],
 })
 export class FormComponent implements OnInit {
+  @Input() field: string = "";
   public value: string = "";
   public error: string = "";
   public fieldName = field("name");
 
   ngOnInit() {
-    this.fieldName.subscribeValue((value) => (this.value = value));
-    this.fieldName.subscribeError((value) => (this.error = value));
+    field(this.field).subscribeValue((value) => (this.value = value));
+    field(this.field).subscribeError((value) => (this.error = value));
   }
 
   changeName(e: any) {
-    this.fieldName.setValue(e.target.value);
+    field(this.field).setValue(e.target.value);
   }
+
+  submitData() {
+    submit((data) => {
+      let errors = { ...FormUserFields };
+      if (!data.name) errors.name = "name required";
+      //check for errors
+      if (JSON.stringify(errors) === JSON.stringify(FormUserFields))
+        console.log("send data", data);
+
+      return errors;
+    });
+  }
+}
+```
+
+Submit html
+
+```html
+<div>
+  <app-form field="name" />
+  <button (click)="submitData()">Submit</button>
+</div>
+```
+
+Submit component
+
+```ts
+import { Component } from "@angular/core";
+import { FormUser, FormUserFields } from "../formUser";
+
+const { submit } = FormUser;
+
+@Component({
+  selector: "app-root",
+  templateUrl: "app.component.html",
+  styleUrls: ["app.component.scss"],
+})
+export class AppComponent {
+  constructor() {}
 
   submitData() {
     submit((data) => {
