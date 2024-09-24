@@ -3,8 +3,10 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import InputText from "./InputText";
-import TsFormUser, { userSchema } from "./createFormUser";
-import validateYup from "./validateYup";
+import TsFormUser from "./createFormUser";
+
+import validateZod from "./validateZod";
+import { userSchemaZod } from "./createFormUserZod";
 
 function App() {
   const [count, setCount] = useState(1);
@@ -12,7 +14,7 @@ function App() {
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    submit((data) => validateYup(data, userSchema));
+    submit((data) => validateZod(data, userSchemaZod));
   };
 
   return (
