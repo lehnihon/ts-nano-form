@@ -1,31 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Store } from "../types";
-import { DEFAULT_MONEY_OPTIONS } from "../constants";
-import { MoneyOptions, MapOptions, MaskOptions } from "../types";
-import createStore from "../store";
-
-export const instanceOfStore = (object: any): object is Store =>
-  typeof object === "object" && "subscribe" in object;
-
-export const iterateStore = (
-  obj: Record<string, any>,
-  callback: (value: any) => void
-): any => {
-  const objClone = copyObj(obj);
-  if (!isObject(obj) || instanceOfStore(obj)) return callback(obj);
-  for (const x in obj) {
-    objClone[x] = iterateStore(obj[x], callback);
-  }
-  return objClone;
-};
-
-export const findStoreByPath = (
-  obj: Record<string, any>,
-  path: string | string[]
-) => {
-  if (!has(obj, path)) set(obj, path, createStore());
-  return get(obj, path);
-};
 
 export const has = (obj: Record<string, any>, path: string | string[]) =>
   !!pathToArray(path).reduce((prevObj, key) => prevObj && prevObj[key], obj);
@@ -48,87 +21,8 @@ export const set = (
   }, obj);
 };
 
-const pathToArray = (path: string | string[]) =>
+export const pathToArray = (path: string | string[]) =>
   Array.isArray(path) ? path : path.match(/([^[.\]])+/g) || [];
-
-export const transformMask = (
-  value: string,
-  acc: string,
-  option: MapOptions
-) => {
-  if (option?.transform) {
-    const { prevValue, newChar } = option.transform(acc, value);
-    return prevValue + newChar;
-  }
-  return acc + value;
-};
-
-export const allowNegativeRule = (value: string, rules: MoneyOptions) => {
-  if (!rules.allowNegative) return "";
-  return value.match(/-/g)?.length === 1 && value.match(/\+/g)?.length !== 1
-    ? "-"
-    : "";
-};
-
-export const applyMask = (
-  value: string,
-  maskRule: string,
-  rules: MaskOptions
-) => {
-  let i = 0;
-  return [...maskRule].reduce((acc, char) => {
-    const currentValue = value[i];
-    if (!currentValue) return acc;
-    if (currentValue === char) return ++i, acc + char;
-    const currentRule = rules.map.get(char);
-    if (!currentRule) return acc + char;
-    return currentRule.pattern.test(currentValue)
-      ? (++i, transformMask(currentValue, acc, currentRule))
-      : ((i = -1), acc);
-  }, "");
-};
-
-export const applyMaskMoney = (
-  value: number,
-  sign: string,
-  rules: MoneyOptions
-) =>
-  `${sign}${rules.prefix || ""}${value
-    .toFixed(rules.precision)
-    .replace(".", rules.decimal)
-    .replace(
-      regexMaskMoney(rules.precision, rules.decimal),
-      `$1${rules.thousands}`
-    )}`;
-
-export const regexMaskMoney = (precision: number, decimal: string) =>
-  new RegExp(
-    precision === 0
-      ? "(\\d{1,3})(?=(\\d{3})+(?!\\d))"
-      : `(\\d)(?=(\\d{3})+${scapeRegex(decimal)})`,
-    "g"
-  );
-
-export const splitIntegerDecimal = (value: string, rules: MoneyOptions) => {
-  const minusSign = allowNegativeRule(value, rules);
-  const numberParts = value.split(rules.decimal);
-  const decimalPart = onlyDigits(numberParts.pop());
-  const integerPart = onlyDigits(numberParts.join(""));
-  return { integerPart: `${minusSign}${integerPart}`, decimalPart };
-};
-
-export const clearMoneyValue = (value: string, precision: number) =>
-  Number(onlyDigits(value)) / Number(`1${"".padEnd(precision, "0")}`);
-
-export const validateMoneyRules = (rules?: MoneyOptions) => {
-  if (!rules) return DEFAULT_MONEY_OPTIONS;
-  return {
-    ...rules,
-    precision: !rules.precision || rules.precision < 0 ? 0 : rules.precision,
-    decimal: !rules.decimal ? "." : rules.decimal,
-    allowNegative: !rules?.allowNegative ? false : true,
-  };
-};
 
 export const scapeRegex = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

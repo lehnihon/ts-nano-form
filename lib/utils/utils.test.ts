@@ -1,20 +1,16 @@
 import { describe, test, expect } from "vitest";
 import createStore from "../store";
-import {
-  allowNegativeRule,
-  applyMask,
-  applyMaskMoney,
-  clearMoneyValue,
-  findStoreByPath,
-  instanceOfStore,
-  iterateStore,
-  onlyDigits,
-  removeSpecialChar,
-  scapeRegex,
-  splitIntegerDecimal,
-  transformMask,
-} from ".";
+import { onlyDigits, removeSpecialChar, scapeRegex } from ".";
 import { DEFAULT_MASK_OPTIONS, DEFAULT_MONEY_OPTIONS } from "../constants";
+import iterateStore from "./iterateStore";
+import instanceOfStore from "./instanceOfStore";
+import findStoreByPath from "./findStoreByPath";
+import transformMask from "./transformMask";
+import allowNegativeRule from "./allowNegativeRule";
+import applyMask from "./applyMask";
+import applyMaskMoney from "./applyMaskMoney";
+import splitIntegerDecimal from "./splitIntegerToDecimal";
+import clearMoneyValue from "./clearMoneyValue";
 
 describe("Utils Form", () => {
   test("instanceOfStore", () => {

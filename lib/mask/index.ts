@@ -1,15 +1,11 @@
 import { MaskType } from "../enums";
 import { MaskOptions, MoneyOptions } from "../types";
-import {
-  allowNegativeRule,
-  applyMask,
-  applyMaskMoney,
-  clearMoneyValue,
-  onlyDigits,
-  removeSpecialChar,
-  scapeRegex,
-  splitIntegerDecimal,
-} from "../utils";
+import { onlyDigits, removeSpecialChar, scapeRegex } from "../utils";
+import allowNegativeRule from "../utils/allowNegativeRule";
+import applyMask from "../utils/applyMask";
+import applyMaskMoney from "../utils/applyMaskMoney";
+import clearMoneyValue from "../utils/clearMoneyValue";
+import splitIntegerDecimal from "../utils/splitIntegerToDecimal";
 
 export const mask = (value: string, maskRule: string, rules: MaskOptions) => {
   const beforeValue = rules.beforeMask ? rules.beforeMask(value) : value;

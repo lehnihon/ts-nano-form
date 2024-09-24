@@ -1,6 +1,6 @@
 import { mask, maskMoney, unmask, unmaskMoney } from "../mask";
 import { Field, MaskOptions, MoneyOptions, Store } from "../types";
-import { findStoreByPath } from "../utils";
+import findStoreByPath from "../utils/findStoreByPath";
 
 const field = (
   name: string,

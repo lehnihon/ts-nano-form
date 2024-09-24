@@ -983,6 +983,7 @@ Examples of using form validators
 
 ```ts
 import { AnyObject, ObjectSchema, ValidationError } from "yup";
+import TsFormUser, { userSchema } from "./createFormUser";
 
 const validateYup = <T>(data: T, schema: ObjectSchema<AnyObject>) => {
   let errors = { ...data };
@@ -1000,7 +1001,8 @@ const validateYup = <T>(data: T, schema: ObjectSchema<AnyObject>) => {
   }
 };
 
-export default validateYup;
+const { submit } = TsFormUser;
+submit((data) => validateYup(data, userSchema));
 ```
 
 ![divider](./divider.png)

@@ -7,7 +7,7 @@ import TsFormUser, { userSchema } from "./createFormUser";
 import validateYup from "./validateYup";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const { submit } = TsFormUser;
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
@@ -29,7 +29,9 @@ function App() {
       <form onSubmit={handleSubmit}>
         <InputText field="name" />
         <InputText field="document" />
-        <InputText field="data.0.image" />
+        {[...Array(count)].map((_, i) => (
+          <InputText key={i} field={`data.${i}.image`} />
+        ))}
         <p>
           <input type="submit" value="Enviar" />
         </p>

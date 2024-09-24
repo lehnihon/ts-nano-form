@@ -14,12 +14,10 @@ import {
   MaskOptions,
   MoneyOptions,
 } from "../types";
-import {
-  validateMoneyRules,
-  findStoreByPath,
-  iterateStore,
-  instanceOfStore,
-} from "../utils";
+import findStoreByPath from "../utils/findStoreByPath";
+import instanceOfStore from "../utils/instanceOfStore";
+import iterateStore from "../utils/iterateStore";
+import validateMoneyRules from "../utils/validateMoneyRules";
 import field from "./field";
 
 const createForm = <T extends Record<string, unknown>>({
@@ -64,7 +62,6 @@ const createForm = <T extends Record<string, unknown>>({
   ) => {
     const storeValues = getValues();
     const newErrors = validate(storeValues);
-    console.log(storeValues);
     reset(_errors);
     if (newErrors)
       Object.keys(newErrors).map((key) => {
