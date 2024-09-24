@@ -53,6 +53,7 @@ Need for a solution that works on different stacks.
   - [Angular](#angular)
   - [Validators](#validators)
     - [Yup](#yup)
+    - [Zod](#zod)
 - [License](#license)
 
 ![divider](./divider.png)
