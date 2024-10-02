@@ -1,15 +1,23 @@
-import { MaskType } from "../enums";
 import { MaskOptions, MoneyOptions } from "../types";
-import { onlyDigits, removeSpecialChar, scapeRegex } from "../utils";
+import { onlyDigits, scapeRegex } from "../utils";
 import allowNegativeRule from "../utils/allowNegativeRule";
 import applyMask from "../utils/applyMask";
 import applyMaskMoney from "../utils/applyMaskMoney";
 import clearMoneyValue from "../utils/clearMoneyValue";
+import { findMaskRule } from "../utils/findMaskRule";
 import splitIntegerDecimal from "../utils/splitIntegerToDecimal";
 
-export const mask = (value: string, maskRule: string, rules: MaskOptions) => {
+export const mask = (
+  value: string,
+  maskRule: string | string[],
+  rules: MaskOptions
+) => {
   const beforeValue = rules.beforeMask ? rules.beforeMask(value) : value;
-  const masked = applyMask(beforeValue, maskRule, rules);
+  const masked = applyMask(
+    beforeValue,
+    findMaskRule(value, maskRule, rules),
+    rules
+  );
   const afterValue = rules.afterMask ? rules.afterMask(masked) : masked;
 
   return afterValue;
@@ -46,25 +54,6 @@ export const unmaskMoney = (value: string, rules: MoneyOptions) => {
   if (rules.precision === 0) return onlyDigits(value);
   const { integerPart, decimalPart } = splitIntegerDecimal(value, rules);
   return `${integerPart}.${decimalPart}`;
-};
-
-export const getMask = (value: string, type: MaskType) => {
-  switch (type) {
-    case MaskType.DOCUMENT_BR:
-      return removeSpecialChar(value).length <= 11
-        ? "000.000.000-00"
-        : "00.000.000/0000-00";
-    case MaskType.PHONE_BR:
-      return removeSpecialChar(value).length <= 10
-        ? "(00)0000-0000"
-        : "(00)00000-0000";
-    case MaskType.LICENSE_PLATE_BR:
-      return "XXX-0Z00";
-    case MaskType.ZIPCODE_BR:
-      return "00000-000";
-    default:
-      return "";
-  }
 };
 
 export const getPlaceholder = (maskRule: string, rules: MaskOptions) =>

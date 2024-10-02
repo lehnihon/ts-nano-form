@@ -20,7 +20,7 @@ const field = (
     return _storeError.get();
   };
 
-  const getMasked = (maskRule: string): string => {
+  const getMasked = (maskRule: string | string[]): string => {
     return mask(_storeValue.get(), maskRule, rulesMask);
   };
 
@@ -42,11 +42,11 @@ const field = (
   };
 
   const setValue = (value: string): string => {
-    _storeValue.set(value);
+    _storeValue.set(unmask(value, rulesMask));
     return getValue();
   };
 
-  const setMasked = (value: string, maskRule: string): string => {
+  const setMasked = (value: string, maskRule: string | string[]): string => {
     _storeValue.set(mask(value, maskRule, rulesMask));
     return getValue();
   };

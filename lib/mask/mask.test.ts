@@ -1,14 +1,6 @@
 import { describe, test, expect } from "vitest";
-import {
-  getMask,
-  getPlaceholder,
-  mask,
-  maskMoney,
-  unmask,
-  unmaskMoney,
-} from ".";
+import { getPlaceholder, mask, maskMoney, unmask, unmaskMoney } from ".";
 import { DEFAULT_MASK_OPTIONS, DEFAULT_MONEY_OPTIONS } from "../constants";
-import { MaskType } from "../enums";
 import { MapOptions } from "../types";
 
 describe("Mask", () => {
@@ -17,30 +9,49 @@ describe("Mask", () => {
     expect(value).toBe("123-456-789");
   });
 
-  test("mask cpf", () => {
+  test("mask array cpf", () => {
     const value = mask(
       "30160798019",
-      getMask("30160798019", MaskType.DOCUMENT_BR),
+      ["000.000.000-00", "00.000.000/0000-00"],
       DEFAULT_MASK_OPTIONS
     );
+    expect(value).toBe("301.607.980-19");
+  });
+
+  test("mask array cnpj", () => {
+    const value = mask(
+      "41.996.557/0001-01",
+      ["000.000.000-00", "00.000.000/0000-00"],
+      DEFAULT_MASK_OPTIONS
+    );
+    expect(value).toBe("41.996.557/0001-01");
+  });
+
+  test("mask array cnpj unmasked", () => {
+    const value = mask(
+      "41996557000101",
+      ["000.000.000-00", "00.000.000/0000-00"],
+      DEFAULT_MASK_OPTIONS
+    );
+    expect(value).toBe("41.996.557/0001-01");
+  });
+
+  test("mask cpf", () => {
+    const value = mask("30160798019", "000.000.000-00", DEFAULT_MASK_OPTIONS);
     expect(value).toBe("301.607.980-19");
   });
 
   test("mask cnpj", () => {
     const value = mask(
       "41996557000101",
-      getMask("41996557000101", MaskType.DOCUMENT_BR),
+      "00.000.000/0000-00",
       DEFAULT_MASK_OPTIONS
     );
     expect(value).toBe("41.996.557/0001-01");
   });
 
   test("mask transform", () => {
-    const value = mask(
-      "abc-1d34",
-      getMask("abc-1d34", MaskType.LICENSE_PLATE_BR),
-      DEFAULT_MASK_OPTIONS
-    );
+    const value = mask("abc-1d34", "XXX-0Z00", DEFAULT_MASK_OPTIONS);
     expect(value).toBe("ABC-1D34");
   });
 

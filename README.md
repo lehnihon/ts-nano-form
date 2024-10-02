@@ -599,20 +599,6 @@ const umasked = unmaskMoney("1.234,56");
 //123456
 ```
 
-- Get default masks
-
-`getMask(value: string, type: MaskType)`
-
-```ts
-import { FormUser } from "./FormUser";
-import { maskType } from "ts-nano-form";
-
-const { mask, getMask } = FormUser;
-const value = "469636036";
-mask(value, getMask(value, MaskType.DOCUMENT_BR));
-//46.963.603-6
-```
-
 - Get placeholder
 
 `getPlaceholder(maskRule: string)`

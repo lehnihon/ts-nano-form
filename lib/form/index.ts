@@ -1,12 +1,5 @@
 import { DEFAULT_MASK_OPTIONS } from "../constants";
-import {
-  getMask,
-  getPlaceholder,
-  mask,
-  maskMoney,
-  unmask,
-  unmaskMoney,
-} from "../mask";
+import { getPlaceholder, mask, maskMoney, unmask, unmaskMoney } from "../mask";
 import createStore from "../store";
 import {
   CreateForm,
@@ -92,13 +85,12 @@ const createForm = <T extends Record<string, unknown>>(
     field: (name: string) =>
       field(name, _values, _errors, _rulesMask, _rulesMoney),
     submit,
-    mask: (value: string, maskRule: string) =>
+    mask: (value: string, maskRule: string | string[]) =>
       mask(value, maskRule, _rulesMask),
     unmask: (value: string) => unmask(value, _rulesMask),
     maskMoney: (value: string) => maskMoney(value, _rulesMoney),
     unmaskMoney: (value: string) => unmaskMoney(value, _rulesMoney),
     getPlaceholder: (value: string) => getPlaceholder(value, _rulesMask),
-    getMask,
     setRulesMask,
     setRulesMoney,
     getRules,

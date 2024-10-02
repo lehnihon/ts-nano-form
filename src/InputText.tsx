@@ -6,12 +6,13 @@ interface InputTextProps {
 }
 
 const InputText = ({ field }: InputTextProps) => {
-  const { subscribeValue, getValue, subscribeError, getError, setValue } =
+  const { subscribeValue, subscribeError, getError, setValue, getMasked } =
     TsFormUser.field(field);
 
-  const value = useSyncExternalStore(subscribeValue, getValue);
+  const value = useSyncExternalStore(subscribeValue, () =>
+    getMasked(["000.000.000-00", "00.000.000/0000-00"])
+  );
   const error = useSyncExternalStore(subscribeError, getError);
-
   return (
     <>
       <p>{field}</p>

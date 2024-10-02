@@ -1,5 +1,3 @@
-import { MaskType } from "../enums";
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CreateForm<T> {
   field: (name: string) => Field;
@@ -21,12 +19,11 @@ export interface CreateForm<T> {
     rulesMask: MaskOptions;
     rulesMoney: MoneyOptions;
   };
-  mask: (value: string, maskRule: string) => string;
+  mask: (value: string, maskRule: string | string[]) => string;
   unmask: (value: string) => string;
   maskMoney: (value: string) => string;
   unmaskMoney: (value: string) => string;
   getPlaceholder: (value: string) => string;
-  getMask: (value: string, type: MaskType) => string;
 }
 
 export interface CreateFormProps<T> {
@@ -36,14 +33,14 @@ export interface CreateFormProps<T> {
 
 export interface Field {
   getValue: () => string;
-  getMasked: (maskRule: string) => string;
+  getMasked: (maskRule: string | string[]) => string;
   getUnmasked: () => string;
   getMoneyMasked: () => string;
   getMoneyUnmasked: () => string;
   getError: () => string;
   setError: (value: string) => string;
   setValue: (value: string) => string;
-  setMasked: (value: string, maskRule: string) => string;
+  setMasked: (value: string, maskRule: string | string[]) => string;
   setMoneyMasked: (value: string) => string;
   subscribeValue: (
     listener: (value: string, prevValue: string) => void
