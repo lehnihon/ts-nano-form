@@ -20,16 +20,17 @@ import iterateStore from "../utils/iterateStore";
 import validateMoneyRules from "../utils/validateMoneyRules";
 import field from "./field";
 
-const createForm = <T extends Record<string, unknown>>({
-  initialValues,
-  options,
-}: CreateFormProps<T>): CreateForm<T> => {
-  const _values = iterateStore(initialValues || ({} as T), (value) =>
+const createForm = <T extends Record<string, unknown>>(
+  params?: CreateFormProps<T>
+): CreateForm<T> => {
+  const _values = iterateStore(params?.initialValues || ({} as T), (value) =>
     createStore(value)
   );
-  const _errors = iterateStore(initialValues || ({} as T), () => createStore());
-  let _rulesMask = options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
-  let _rulesMoney = validateMoneyRules(options?.moneyOptions);
+  const _errors = iterateStore(params?.initialValues || ({} as T), () =>
+    createStore()
+  );
+  let _rulesMask = params?.options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
+  let _rulesMoney = validateMoneyRules(params?.options?.moneyOptions);
 
   const getValues = () =>
     iterateStore(_values, (value) => instanceOfStore(value) && value.get());
