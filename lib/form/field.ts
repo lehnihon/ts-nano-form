@@ -51,6 +51,11 @@ const field = (
     return getValue();
   };
 
+  const setMoney = (value: string): string => {
+    _storeValue.set(unmaskMoney(value, rulesMoney));
+    return getValue();
+  };
+
   const setMoneyMasked = (value: string): string => {
     _storeValue.set(maskMoney(value, rulesMoney));
     return getValue();
@@ -74,6 +79,7 @@ const field = (
     setError,
     setValue,
     setMasked,
+    setMoney,
     setMoneyMasked,
     subscribeValue,
     subscribeError,

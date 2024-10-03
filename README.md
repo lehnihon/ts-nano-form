@@ -743,7 +743,7 @@ const moneyOptions = {
   thousands: ".",
   decimal: ",",
   precision: 2,
-  beforeMask: (value) => (value === 1000 ? 1001 : value),
+  beforeMask: (value) => (value === "1000" ? "1001" : value),
   afterMask: (value) => "$" + value,
 };
 

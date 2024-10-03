@@ -1,11 +1,10 @@
 import { MaskOptions, MoneyOptions } from "../types";
-import { onlyDigits, scapeRegex } from "../utils";
+import { scapeRegex } from "../utils";
 import allowNegativeRule from "../utils/allowNegativeRule";
 import applyMask from "../utils/applyMask";
 import applyMaskMoney from "../utils/applyMaskMoney";
 import clearMoneyValue from "../utils/clearMoneyValue";
-import { findMaskRule } from "../utils/findMaskRule";
-import splitIntegerDecimal from "../utils/splitIntegerToDecimal";
+import findMaskRule from "../utils/findMaskRule";
 
 export const mask = (
   value: string,
@@ -51,9 +50,8 @@ export const maskMoney = (value: string, rules: MoneyOptions) => {
 
 export const unmaskMoney = (value: string, rules: MoneyOptions) => {
   if (!value) return "0";
-  if (rules.precision === 0) return onlyDigits(value);
-  const { integerPart, decimalPart } = splitIntegerDecimal(value, rules);
-  return `${integerPart}.${decimalPart}`;
+  const minusSign = allowNegativeRule(value, rules);
+  return `${minusSign}${clearMoneyValue(value, rules.precision)}`;
 };
 
 export const getPlaceholder = (maskRule: string, rules: MaskOptions) =>

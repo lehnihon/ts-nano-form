@@ -1,16 +1,17 @@
 import { describe, test, expect } from "vitest";
 import createStore from "../store";
-import { onlyDigits, removeSpecialChar, scapeRegex } from ".";
+import { isNumber, onlyDigits, removeSpecialChar, scapeRegex } from ".";
 import { DEFAULT_MASK_OPTIONS, DEFAULT_MONEY_OPTIONS } from "../constants";
 import iterateStore from "./iterateStore";
 import instanceOfStore from "./instanceOfStore";
 import findStoreByPath from "./findStoreByPath";
 import transformMask from "./transformMask";
 import allowNegativeRule from "./allowNegativeRule";
-import applyMask from "./applyMask";
-import applyMaskMoney from "./applyMaskMoney";
 import splitIntegerDecimal from "./splitIntegerToDecimal";
 import clearMoneyValue from "./clearMoneyValue";
+import applyMask from "./applyMask";
+import applyMaskMoney from "./applyMaskMoney";
+import findMaskRule from "./findMaskRule";
 
 describe("Utils Form", () => {
   test("instanceOfStore", () => {
@@ -24,6 +25,15 @@ describe("Utils Form", () => {
     };
     const store = findStoreByPath(values, "document");
     expect(store.get()).toBe("abc");
+  });
+
+  test("findMaskRule", () => {
+    const value = findMaskRule(
+      "301607980199",
+      ["000.000.000-00", "00.000.000/0000-00"],
+      DEFAULT_MASK_OPTIONS
+    );
+    expect(value).toBe("00.000.000/0000-00");
   });
 
   test("findStoreByPath array", () => {
@@ -131,7 +141,7 @@ describe("Utils Mask", () => {
   });
 
   test("applyMaskMoney", () => {
-    const value = applyMaskMoney(1234567.89, "-", DEFAULT_MONEY_OPTIONS);
+    const value = applyMaskMoney("1234567.89", "-", DEFAULT_MONEY_OPTIONS);
     expect(value).toBe("-1.234.567,89");
   });
 
@@ -145,7 +155,7 @@ describe("Utils Mask", () => {
 
   test("clearMoneyValue", () => {
     const value = clearMoneyValue("1.234.567,89", 2);
-    expect(value).toBe(1234567.89);
+    expect(value).toBe("1234567.89");
   });
 
   test("scapeRegex", () => {
@@ -161,5 +171,15 @@ describe("Utils Mask", () => {
   test("onlyDigits", () => {
     const value = onlyDigits("A123BC");
     expect(value).toBe("123");
+  });
+
+  test("isNumber false", () => {
+    const value = isNumber("R$10000");
+    expect(value).toBe(false);
+  });
+
+  test("isNumber true", () => {
+    const value = isNumber("100.00");
+    expect(value).toBe(true);
   });
 });

@@ -21,6 +21,15 @@ export const set = (
   }, obj);
 };
 
+export const toFixed = (value: string, precision: number) =>
+  !value || value === "0"
+    ? `0${precision === 0 ? "" : ".".padEnd(precision + 1, "0")}`
+    : Number(
+        value.match(
+          new RegExp("^-?\\d+(?:.\\d{0," + (precision || -1) + "})?")
+        )![0]
+      ).toFixed(precision);
+
 export const pathToArray = (path: string | string[]) =>
   Array.isArray(path) ? path : path.match(/([^[.\]])+/g) || [];
 
@@ -36,6 +45,10 @@ export const onlyDigits = (value?: string) =>
 export const isObject = (value: any) =>
   typeof value === "object" && value !== null;
 
-export const isNumber = (value: string) => /^-?\d+$/.test(value);
+export const hasDecimal = (value: number) => value % 1 != 0;
+
+export const isNumber = (num: any) =>
+  (typeof num === "number" || (typeof num === "string" && num.trim() !== "")) &&
+  !isNaN(num as number);
 
 export const copyObj = (obj: any) => JSON.parse(JSON.stringify(obj));

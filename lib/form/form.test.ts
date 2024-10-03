@@ -52,6 +52,60 @@ describe("Form", () => {
     expect(data).toBe("d");
   });
 
+  test("setValue", () => {
+    TsForm.field("name").setValue("123456");
+
+    expect(TsForm.field("name").getValue()).toBe("123456");
+  });
+
+  test("setValue masked", () => {
+    TsForm.field("name").setValue("123-456");
+
+    expect(TsForm.field("name").getValue()).toBe("123456");
+  });
+
+  test("setValue getMasked", () => {
+    TsForm.field("name").setValue("123456");
+
+    expect(TsForm.field("name").getMasked("000-000")).toBe("123-456");
+  });
+
+  test("setMasked", () => {
+    TsForm.field("name").setMasked("123456", "000-000");
+
+    expect(TsForm.field("name").getValue()).toBe("123-456");
+  });
+
+  test("setMasked getUnmasked", () => {
+    TsForm.field("name").setMasked("123456", "000-000");
+
+    expect(TsForm.field("name").getUnmasked()).toBe("123456");
+  });
+
+  test("setMoney", () => {
+    TsForm.field("name").setMoney("123456");
+
+    expect(TsForm.field("name").getValue()).toBe("1234.56");
+  });
+
+  test("setMoney masked", () => {
+    TsForm.field("name").setMoney("1.234,56");
+
+    expect(TsForm.field("name").getValue()).toBe("1234.56");
+  });
+
+  test("setMoney getMoneyMasked", () => {
+    TsForm.field("name").setMoneyMasked("123456");
+
+    expect(TsForm.field("name").getMoneyMasked()).toBe("1.234,56");
+  });
+
+  test("setMoneyMasked", () => {
+    TsForm.field("name").setMoneyMasked("1234.56");
+
+    expect(TsForm.field("name").getValue()).toBe("1.234,56");
+  });
+
   test("submit", () => {
     TsForm.field("name").setValue("");
     TsForm.submit((data) => ({

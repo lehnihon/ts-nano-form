@@ -3,7 +3,6 @@ import transformMask from "./transformMask";
 
 const applyMask = (value: string, maskRule: string, rules: MaskOptions) => {
   let i = 0;
-
   return [...maskRule].reduce((acc, char) => {
     const currentValue = value[i];
     if (!currentValue) return acc;

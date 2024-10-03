@@ -41,6 +41,7 @@ export interface Field {
   setError: (value: string) => string;
   setValue: (value: string) => string;
   setMasked: (value: string, maskRule: string | string[]) => string;
+  setMoney: (value: string) => string;
   setMoneyMasked: (value: string) => string;
   subscribeValue: (
     listener: (value: string, prevValue: string) => void
@@ -81,7 +82,7 @@ export interface MoneyOptions {
   precision: number;
   prefix?: string;
   allowNegative?: boolean;
-  beforeMask?: (value: number) => number;
+  beforeMask?: (value: string) => string;
   afterMask?: (value: string) => string;
 }
 

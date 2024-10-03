@@ -98,6 +98,26 @@ describe("Mask money", () => {
     expect(value).toBe("1.234.567,89");
   });
 
+  test("maskMoney zero precision decimal", () => {
+    const value = maskMoney("1234.50", DEFAULT_MONEY_OPTIONS);
+    expect(value).toBe("1.234,50");
+  });
+
+  test("maskMoney zero precision integer", () => {
+    const value = maskMoney("123450", DEFAULT_MONEY_OPTIONS);
+    expect(value).toBe("1.234,50");
+  });
+
+  test("maskMoney precision round", () => {
+    const value = maskMoney("1234567.8999", DEFAULT_MONEY_OPTIONS);
+    expect(value).toBe("1.234.567,89");
+  });
+
+  test("maskMoney empty", () => {
+    const value = maskMoney("", DEFAULT_MONEY_OPTIONS);
+    expect(value).toBe("0,00");
+  });
+
   test("maskMoney wrong string", () => {
     const value = maskMoney("A2C1", DEFAULT_MONEY_OPTIONS);
     expect(value).toBe("0,21");
@@ -140,7 +160,7 @@ describe("Mask money", () => {
       thousands: ".",
       decimal: ",",
       precision: 2,
-      beforeMask: (value) => value + 5,
+      beforeMask: (value) => `${Number(value) + 5}`,
     });
     expect(value).toBe("1.239,56");
   });
@@ -160,6 +180,11 @@ describe("Mask money", () => {
     expect(value).toBe("1234567.89");
   });
 
+  test("unmaskMoney empty", () => {
+    const value = unmaskMoney("", DEFAULT_MONEY_OPTIONS);
+    expect(value).toBe("0");
+  });
+
   test("unmaskMoney integer", () => {
     const value = unmaskMoney("1.234.567,89", {
       thousands: ".",
@@ -167,5 +192,15 @@ describe("Mask money", () => {
       precision: 0,
     });
     expect(value).toBe("123456789");
+  });
+
+  test("unmaskMoney negative", () => {
+    const value = unmaskMoney("123456-", {
+      thousands: ".",
+      decimal: ",",
+      precision: 2,
+      allowNegative: true,
+    });
+    expect(value).toBe("-1234.56");
   });
 });
