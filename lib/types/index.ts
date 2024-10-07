@@ -10,9 +10,7 @@ export interface CreateForm<T> {
     listener: (value: string, prevValue: string) => void
   ) => Record<string, any>;
   reset: (values: Record<string, unknown>) => void;
-  submit: (
-    validate: (values: T) => Record<string, unknown> | undefined
-  ) => void;
+  submit: (fetcher: (values: T) => void) => void;
   setRulesMask: (rules: MaskOptions) => void;
   setRulesMoney: (rules: MoneyOptions) => void;
   getRules: () => {
@@ -28,6 +26,7 @@ export interface CreateForm<T> {
 
 export interface CreateFormProps<T> {
   initialValues?: T;
+  resolver?: (values: T) => Record<string, unknown> | undefined;
   options?: TsFormOptions;
 }
 

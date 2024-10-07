@@ -1,5 +1,6 @@
 import { array, InferType, object, string } from "yup";
 import createForm from "../lib/form";
+import validateYup from "./validateYup";
 
 export const userSchema = object({
   name: string().required(),
@@ -19,6 +20,8 @@ export const TsFormUserInitalValues = {
   data: [{ image: "" }],
 };
 
-const TsFormUser = createForm<FormUser>();
+const TsFormUser = createForm<FormUser>({
+  resolver: validateYup(userSchema),
+});
 
 export default TsFormUser;

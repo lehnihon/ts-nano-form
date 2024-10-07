@@ -51,17 +51,17 @@ const createForm = <T extends Record<string, unknown>>(
     iterateStore(values, (value) => instanceOfStore(value) && value.set(""));
   };
 
-  const submit = (
-    validate: (values: T) => Record<string, unknown> | undefined
-  ) => {
+  const submit = (fetcher: (values: T) => void) => {
     const storeValues = getValues();
-    const newErrors = validate(storeValues);
+    if (!params?.resolver) return fetcher(storeValues);
+    const newErrors = params?.resolver!(storeValues);
     reset(_errors);
-    if (newErrors)
-      Object.keys(newErrors).map((key) => {
-        const store = findStoreByPath(_errors, key);
-        store.set(newErrors[key]);
-      });
+    return newErrors
+      ? Object.keys(newErrors).map((key) => {
+          const store = findStoreByPath(_errors, key);
+          store.set(newErrors[key]);
+        })
+      : fetcher(storeValues);
   };
 
   const setRulesMask = (rules: MaskOptions) => {
