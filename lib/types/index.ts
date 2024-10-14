@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CreateForm<T> {
-  field: (name: string) => Field;
+  getIsValid: () => boolean;
   getValues: () => T;
   getErrors: () => T;
   subscribeAllValues: (
@@ -10,6 +10,7 @@ export interface CreateForm<T> {
     listener: (value: string, prevValue: string) => void
   ) => Record<string, any>;
   reset: (values: Record<string, unknown>) => void;
+  field: (name: string) => Field;
   submit: (fetcher: (values: T) => void) => void;
   setRulesMask: (rules: MaskOptions) => void;
   setRulesMoney: (rules: MoneyOptions) => void;

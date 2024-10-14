@@ -22,6 +22,7 @@ const createForm = <T extends Record<string, unknown>>(
   const _errors = iterateStore(params?.initialValues || ({} as T), () =>
     createStore()
   );
+  let _isValid = false;
   let _rulesMask = params?.options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
   let _rulesMoney = validateMoneyRules(params?.options?.moneyOptions);
 
@@ -53,15 +54,18 @@ const createForm = <T extends Record<string, unknown>>(
 
   const submit = (fetcher: (values: T) => void) => {
     const storeValues = getValues();
-    if (!params?.resolver) return fetcher(storeValues);
-    const newErrors = params?.resolver!(storeValues);
+    const newErrors = params?.resolver
+      ? params.resolver(storeValues) || {}
+      : {};
     reset(_errors);
-    return newErrors
-      ? Object.keys(newErrors).map((key) => {
-          const store = findStoreByPath(_errors, key);
-          store.set(newErrors[key]);
-        })
-      : fetcher(storeValues);
+    _isValid = true;
+    Object.keys(newErrors).map((key) => {
+      if (!newErrors[key]) return;
+      _isValid = false;
+      const store = findStoreByPath(_errors, key);
+      store.set(newErrors[key]);
+    });
+    if (_isValid) fetcher(storeValues);
   };
 
   const setRulesMask = (rules: MaskOptions) => {
@@ -76,7 +80,12 @@ const createForm = <T extends Record<string, unknown>>(
     return { rulesMask: _rulesMask, rulesMoney: _rulesMoney };
   };
 
+  const getIsValid = () => {
+    return _isValid;
+  };
+
   return {
+    getIsValid,
     getValues,
     getErrors,
     subscribeAllValues,
