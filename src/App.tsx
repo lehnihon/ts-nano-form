@@ -1,11 +1,11 @@
 import "./App.css";
 
-import StoreDoc from "./StoreDoc";
+import InputText from "./InputText";
 
 function App() {
   return (
     <>
-      <StoreDoc />
+      <InputText field="name" />
     </>
   );
 }
