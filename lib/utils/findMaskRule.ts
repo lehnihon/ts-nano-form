@@ -12,7 +12,7 @@ const findMaskRule = (
         .find(
           (rule) => unmask(rule, rules).length >= unmask(value, rules).length
         ) ||
-      maskRule.pop() ||
+      maskRule[maskRule.length - 1] ||
       ""
     : maskRule;
 
