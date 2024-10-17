@@ -7,6 +7,7 @@ import {
   MaskOptions,
   MoneyOptions,
 } from "../types";
+import { toString } from "../utils";
 import findStoreByPath from "../utils/findStoreByPath";
 import instanceOfStore from "../utils/instanceOfStore";
 import iterateStore from "../utils/iterateStore";
@@ -30,10 +31,13 @@ const createForm = <T extends Record<string, unknown>>(
     iterateStore(_values, (value) => instanceOfStore(value) && value.get());
 
   const getErrors = () =>
-    iterateStore(_errors, (value) => instanceOfStore(value) && value.get());
+    iterateStore(
+      _errors,
+      (value) => instanceOfStore(value) && toString(value.get())
+    );
 
   const subscribeAllValues = (
-    listener: (value: string, prevValue: string) => void
+    listener: (value: unknown, prevValue: unknown) => void
   ) =>
     iterateStore(
       _values,
@@ -41,7 +45,7 @@ const createForm = <T extends Record<string, unknown>>(
     );
 
   const subscribeAllErrors = (
-    listener: (value: string, prevValue: string) => void
+    listener: (value: unknown, prevValue: unknown) => void
   ) =>
     iterateStore(
       _errors,

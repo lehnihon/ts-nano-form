@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CreateForm<T> {
   getIsValid: () => boolean;
   getValues: () => T;
   getErrors: () => T;
   subscribeAllValues: (
-    listener: (value: string, prevValue: string) => void
-  ) => Record<string, any>;
+    listener: (value: unknown, prevValue: unknown) => void
+  ) => Record<string, unknown>;
   subscribeAllErrors: (
-    listener: (value: string, prevValue: string) => void
-  ) => Record<string, any>;
+    listener: (value: unknown, prevValue: unknown) => void
+  ) => Record<string, unknown>;
   reset: (values: Record<string, unknown>) => void;
   field: (name: string) => Field;
   submit: (fetcher: (values: T) => void) => void;
@@ -32,32 +31,32 @@ export interface CreateFormProps<T> {
 }
 
 export interface Field {
-  getValue: () => string;
+  getValue: () => unknown;
   getMasked: (maskRule: string | string[]) => string;
   getUnmasked: () => string;
   getMoneyMasked: () => string;
   getMoneyUnmasked: () => string;
   getError: () => string;
   setError: (value: string) => string;
-  setValue: (value: string) => string;
+  setValue: (value: unknown) => unknown;
   setMasked: (value: string, maskRule: string | string[]) => string;
   setMoney: (value: string) => string;
   setMoneyMasked: (value: string) => string;
   subscribeValue: (
-    listener: (value: string, prevValue: string) => void
+    listener: (value: unknown, prevValue: unknown) => void
   ) => () => void;
   subscribeError: (
-    listener: (value: string, prevValue: string) => void
+    listener: (value: unknown, prevValue: unknown) => void
   ) => () => void;
 }
 
 export interface Store {
   subscribe: (
-    listener: (value: string, prevValue: string) => void
+    listener: (value: unknown, prevValue: unknown) => void
   ) => () => void;
-  emit: (value: string, prevValue: string) => void;
-  get: () => string;
-  set: (newValue: string) => void;
+  emit: (value: unknown, prevValue: unknown) => void;
+  get: () => unknown;
+  set: (newValue: unknown) => void;
 }
 
 export interface TsFormOptions {

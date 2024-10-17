@@ -11,7 +11,6 @@ const InputText = ({ field, mask }: InputTextProps) => {
     TsFormUser.field(field);
 
   const value = useSyncExternalStore(subscribeValue, () => getMasked(mask));
-
   const error = useSyncExternalStore(subscribeError, getError);
 
   return (

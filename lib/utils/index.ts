@@ -52,3 +52,5 @@ export const isNumber = (num: any) =>
   !isNaN(num as number);
 
 export const copyObj = (obj: any) => JSON.parse(JSON.stringify(obj));
+
+export const toString = (value: any) => String(value || "");

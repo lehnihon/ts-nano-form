@@ -1,10 +1,12 @@
 import { Store } from "../types";
 
-const createStore = (initial?: string): Store => {
-  let _value = initial ?? "";
-  let _listeners: Array<(value: string, prevValue: string) => void> = [];
+const createStore = (initial?: unknown): Store => {
+  let _value = initial;
+  let _listeners: Array<(value: unknown, prevValue: unknown) => void> = [];
 
-  const subscribe = (listener: (value: string, prevValue: string) => void) => {
+  const subscribe = (
+    listener: (value: unknown, prevValue: unknown) => void
+  ) => {
     _listeners = [..._listeners, listener];
 
     return () => {
@@ -12,17 +14,17 @@ const createStore = (initial?: string): Store => {
     };
   };
 
-  const emit = (value: string, prevValue: string) => {
+  const emit = (value: unknown, prevValue: unknown) => {
     for (const listener of _listeners) {
       listener(value, prevValue);
     }
   };
 
-  const get = (): string => {
-    return _value || "";
+  const get = (): unknown => {
+    return _value;
   };
 
-  const set = (newValue: string) => {
+  const set = (newValue: unknown) => {
     const prevValue = _value;
     _value = newValue;
     emit(newValue, prevValue);

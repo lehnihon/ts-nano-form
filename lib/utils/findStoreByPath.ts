@@ -1,8 +1,10 @@
 import { get, has, set } from ".";
 import createStore from "../store";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const findStoreByPath = (obj: Record<string, any>, path: string | string[]) => {
+const findStoreByPath = (
+  obj: Record<string, unknown>,
+  path: string | string[]
+) => {
   if (!has(obj, path)) set(obj, path, createStore());
   return get(obj, path);
 };

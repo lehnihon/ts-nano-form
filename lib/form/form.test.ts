@@ -48,7 +48,7 @@ describe("Form", () => {
     });
 
     let data = "a";
-    const listener = (value: string, prevValue: string) => {
+    const listener = (value: unknown, prevValue: unknown) => {
       if (prevValue === "Leandro" && value === "name") data = "b";
     };
     TsForm.subscribeAllValues(listener);
@@ -67,8 +67,8 @@ describe("Form", () => {
     });
 
     let data = "c";
-    const listener = (value: string, prevValue: string) => {
-      if (prevValue === "" && value === "error name") data = "d";
+    const listener = (value: unknown, prevValue: unknown) => {
+      if (prevValue === undefined && value === "error name") data = "d";
     };
     TsForm.subscribeAllErrors(listener);
     expect(data).toBe("c");
