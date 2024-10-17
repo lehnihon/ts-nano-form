@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DEFAULT_MASK_OPTIONS } from "../constants";
 import { getPlaceholder, mask, maskMoney, unmask, unmaskMoney } from "../mask";
 import createStore from "../store";
@@ -14,7 +15,7 @@ import iterateStore from "../utils/iterateStore";
 import validateMoneyRules from "../utils/validateMoneyRules";
 import field from "./field";
 
-const createForm = <T extends Record<string, unknown>>(
+const createForm = <T extends Record<string, any>>(
   params?: CreateFormProps<T>
 ): CreateForm<T> => {
   const _values = iterateStore(params?.initialValues || ({} as T), (value) =>
@@ -36,23 +37,19 @@ const createForm = <T extends Record<string, unknown>>(
       (value) => instanceOfStore(value) && toString(value.get())
     );
 
-  const subscribeAllValues = (
-    listener: (value: unknown, prevValue: unknown) => void
-  ) =>
+  const subscribeAllValues = (listener: (value: any, prevValue: any) => void) =>
     iterateStore(
       _values,
       (value) => instanceOfStore(value) && value.subscribe(listener)
     );
 
-  const subscribeAllErrors = (
-    listener: (value: unknown, prevValue: unknown) => void
-  ) =>
+  const subscribeAllErrors = (listener: (value: any, prevValue: any) => void) =>
     iterateStore(
       _errors,
       (value) => instanceOfStore(value) && value.subscribe(listener)
     );
 
-  const reset = (values: Record<string, unknown>) => {
+  const reset = (values: Record<string, any>) => {
     iterateStore(values, (value) => instanceOfStore(value) && value.set(""));
   };
 

@@ -1,12 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Store } from "../types";
 
-const createStore = (initial?: unknown): Store => {
+const createStore = (initial?: any): Store => {
   let _value = initial;
-  let _listeners: Array<(value: unknown, prevValue: unknown) => void> = [];
+  let _listeners: Array<(value: any, prevValue: any) => void> = [];
 
-  const subscribe = (
-    listener: (value: unknown, prevValue: unknown) => void
-  ) => {
+  const subscribe = (listener: (value: any, prevValue: any) => void) => {
     _listeners = [..._listeners, listener];
 
     return () => {
@@ -14,17 +13,17 @@ const createStore = (initial?: unknown): Store => {
     };
   };
 
-  const emit = (value: unknown, prevValue: unknown) => {
+  const emit = (value: any, prevValue: any) => {
     for (const listener of _listeners) {
       listener(value, prevValue);
     }
   };
 
-  const get = (): unknown => {
+  const get = (): any => {
     return _value;
   };
 
-  const set = (newValue: unknown) => {
+  const set = (newValue: any) => {
     const prevValue = _value;
     _value = newValue;
     emit(newValue, prevValue);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { mask, maskMoney, unmask, unmaskMoney } from "../mask";
 import { Field, MaskOptions, MoneyOptions, Store } from "../types";
 import { toString } from "../utils";
@@ -5,15 +6,15 @@ import findStoreByPath from "../utils/findStoreByPath";
 
 const field = (
   name: string,
-  values: Record<string, unknown>,
-  errors: Record<string, unknown>,
+  values: Record<string, any>,
+  errors: Record<string, any>,
   rulesMask: MaskOptions,
   rulesMoney: MoneyOptions
 ): Field => {
   const _storeValue = findStoreByPath(values, name) as Store;
   const _storeError = findStoreByPath(errors, name) as Store;
 
-  const getValue = (): unknown => {
+  const getValue = (): any => {
     return _storeValue.get();
   };
 
@@ -42,7 +43,7 @@ const field = (
     return toString(getError());
   };
 
-  const setValue = (value: unknown): unknown => {
+  const setValue = (value: any): any => {
     _storeValue.set(
       typeof value === "string" ? unmask(value, rulesMask) : value
     );
@@ -64,13 +65,11 @@ const field = (
     return toString(getValue());
   };
 
-  const subscribeValue = (
-    listener: (value: unknown, prevValue: unknown) => void
-  ) => _storeValue.subscribe(listener);
+  const subscribeValue = (listener: (value: any, prevValue: any) => void) =>
+    _storeValue.subscribe(listener);
 
-  const subscribeError = (
-    listener: (value: unknown, prevValue: unknown) => void
-  ) => _storeError.subscribe(listener);
+  const subscribeError = (listener: (value: any, prevValue: any) => void) =>
+    _storeError.subscribe(listener);
 
   return {
     getValue,

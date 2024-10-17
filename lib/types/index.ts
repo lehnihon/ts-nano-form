@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CreateForm<T> {
   getIsValid: () => boolean;
   getValues: () => T;
   getErrors: () => T;
   subscribeAllValues: (
-    listener: (value: unknown, prevValue: unknown) => void
-  ) => Record<string, unknown>;
+    listener: (value: any, prevValue: any) => void
+  ) => Record<string, any>;
   subscribeAllErrors: (
-    listener: (value: unknown, prevValue: unknown) => void
-  ) => Record<string, unknown>;
-  reset: (values: Record<string, unknown>) => void;
+    listener: (value: any, prevValue: any) => void
+  ) => Record<string, any>;
+  reset: (values: Record<string, any>) => void;
   field: (name: string) => Field;
   submit: (fetcher: (values: T) => void) => void;
   setRulesMask: (rules: MaskOptions) => void;
@@ -26,37 +27,35 @@ export interface CreateForm<T> {
 
 export interface CreateFormProps<T> {
   initialValues?: T;
-  resolver?: (values: T) => Record<string, unknown> | undefined;
+  resolver?: (values: T) => Record<string, any> | undefined;
   options?: TsFormOptions;
 }
 
 export interface Field {
-  getValue: () => unknown;
+  getValue: () => any;
   getMasked: (maskRule: string | string[]) => string;
   getUnmasked: () => string;
   getMoneyMasked: () => string;
   getMoneyUnmasked: () => string;
   getError: () => string;
   setError: (value: string) => string;
-  setValue: (value: unknown) => unknown;
+  setValue: (value: any) => any;
   setMasked: (value: string, maskRule: string | string[]) => string;
   setMoney: (value: string) => string;
   setMoneyMasked: (value: string) => string;
   subscribeValue: (
-    listener: (value: unknown, prevValue: unknown) => void
+    listener: (value: any, prevValue: any) => void
   ) => () => void;
   subscribeError: (
-    listener: (value: unknown, prevValue: unknown) => void
+    listener: (value: any, prevValue: any) => void
   ) => () => void;
 }
 
 export interface Store {
-  subscribe: (
-    listener: (value: unknown, prevValue: unknown) => void
-  ) => () => void;
-  emit: (value: unknown, prevValue: unknown) => void;
-  get: () => unknown;
-  set: (newValue: unknown) => void;
+  subscribe: (listener: (value: any, prevValue: any) => void) => () => void;
+  emit: (value: any, prevValue: any) => void;
+  get: () => any;
+  set: (newValue: any) => void;
 }
 
 export interface TsFormOptions {
