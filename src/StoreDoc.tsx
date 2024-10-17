@@ -12,7 +12,7 @@ export default function StoreDoc() {
   });
 
   const { subscribeValue, setValue } = FormUser.field("document");
-  subscribeValue((value: string, prevValue: string) =>
+  subscribeValue((value: unknown, prevValue: unknown) =>
     console.log(value, prevValue)
   );
   setValue("67890");
