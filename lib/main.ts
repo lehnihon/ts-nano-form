@@ -1,6 +1,7 @@
 import createForm from "./form";
+import createStore from "./form";
 export default createForm;
-export * from "./store";
+export { createStore };
 export * from "./constants";
 export * from "./enums";
 export * from "./types";

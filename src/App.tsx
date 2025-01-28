@@ -1,19 +1,11 @@
 import "./App.css";
-import TsFormUser, { TsFormUserInitalValues } from "./createFormUser";
+import TsFormUser from "./createFormUser";
 
 import InputText from "./InputText";
 
 function App() {
   const handleSubmit = () => {
-    TsFormUser.submit((data) => {
-      const errors = { ...TsFormUserInitalValues };
-      if (!data.name) errors.name = "name required";
-      //check for errors
-      if (JSON.stringify(errors) === JSON.stringify(TsFormUserInitalValues))
-        console.log("send data", data);
-
-      return errors;
-    });
+    TsFormUser.submit((data) => console.log(data));
   };
 
   return (

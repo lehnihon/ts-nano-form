@@ -139,7 +139,7 @@ const resolver = (data: any) => {
   const errors = {
     document: "",
   };
-  if (!data.document) errors.name = "document required";
+  if (!data.document) errors.document = "document required";
 
   return errors;
 };
@@ -1061,14 +1061,14 @@ const validateZod = <T>(data: T, schema: z.ZodType<T>) => {
   }
 };
 
-const formSchema = object({
-  name: string().required(),
+export const formSchema = z.object({
+  name: z.string().trim().min(1),
 });
 
 type FormUser = InferType<typeof formSchema>;
 
 const TsForm = createForm<FormUser>({
-  resolver: validateYup(formSchema),
+  resolver: validateZod(formSchema),
 });
 ```
 
