@@ -50,6 +50,7 @@ Need for a solution that works on different stacks.
 - [Examples](#examples)
   - [Vanilla JS](#vanilla-js)
   - [React](#react)
+  - [Vue](#vue)
   - [Angular](#angular)
   - [Validators](#validators)
     - [Yup](#yup)
@@ -69,6 +70,7 @@ npm install ts-nano-form
 ### Quickstart
 
 For each form, create a component with the createForm method.
+Validation is done by the resolver.
 
 ```tsx
 import createForm from "ts-nano-form";
@@ -78,55 +80,42 @@ type FormUserType = {
   document: string;
 };
 
-export const FormUserFields = {
-  name: "",
-  document: "",
+const resolver = (data: any) => {
+  const errors = {
+    name: "",
+    document: "",
+  };
+  if (!data.name) errors.name = "name required";
+  if (!data.document) errors.name = "document required";
+
+  return errors;
 };
 
-export const FormUser = createForm<FormUserType>();
+export const FormUser = createForm<FormUserType>({ resolver });
 ```
 
-Values ​​and errors are accessed by get methods getValue and getError.
-To apply masks use setMasked or setMoneyMasked.
+The fields are filled in and returned by the setValue and getValue methods
 
 ```tsx
 import { FormUser } from "./FormUser";
 
 const { field } = FormUser;
-const { getValue, getError, setValue, setMasked, setMoneyMasked } =
-  field("name");
+const { getValue, setValue } = field("name");
 
-setValue("123456");
+setValue("user name");
 getValue();
 //123456
-
-setMasked("123456", "000-000");
-getValue();
-//123-456
-
-setMoneyMasked("12346");
-getValue();
-//1.234,56
 ```
 
-The submit method validates and returns errors.
+The submit method is sent after validating the resolver and the fields are returned via the data parameter.
 
 ```tsx
-import { FormUser, FormUserFields } from "./FormUser";
+import { FormUser } from "./FormUser";
 
 const { submit, field } = FormUser;
 const { getError } = field("name");
 
-submit((data) => {
-  let errors = { ...FormUserFields };
-  if (!data.name) errors.name = "name required";
-  if (!data.document) errors.document = "document required";
-  //check for errors
-  if (JSON.stringify(errors) === JSON.stringify(FormUserFields))
-    console.log("send data", data);
-
-  return errors;
-});
+submit((data) => console.log("submit", data));
 
 getError();
 //'name required' if it is empty
@@ -136,7 +125,7 @@ getError();
 
 ## Store
 
-Stores are used to store all values ​​and errors and then validated by the submit method.
+Stores are used to store all values ​​and errors and then validated by resolver.
 Each change can be watched with the subscribe method.
 
 ```ts
@@ -146,11 +135,19 @@ type FormUserType = {
   document: string;
 };
 
-export const FormUserFields = {
-  document: "12345",
+const resolver = (data: any) => {
+  const errors = {
+    document: "",
+  };
+  if (!data.document) errors.name = "document required";
+
+  return errors;
 };
 
-export const FormUser = createForm<FormUserType>();
+export const FormUser = createForm<FormUserType>({
+  initialValues: { document: "12345" },
+  resolver,
+});
 const { subscribeValue, setValue } = field("document");
 subscribeValue((value: string, prevValue: string) =>
   console.log(value, prevValue)
@@ -159,8 +156,8 @@ setValue("67890");
 //67890 12345
 ```
 
-setValue, setError are to change store values.
-getValue, getError are to return the values.
+setValue, setError are used to change store values.
+getValue, getError are used to return the values.
 
 ```ts
 import createForm from "ts-nano-form";
@@ -169,17 +166,13 @@ type FormUserType = {
   document: string;
 };
 
-export const FormUserFields = {
-  document: "",
-};
-
 export const FormUser = createForm<FormUserType>();
 const { setValue, setValueMasked, getValue } = field("document");
-setValueMasked("12345");
+setValue("12345");
 getValue();
 //123,45
-setValue("67890");
-getValue();
+setError("67890");
+getError();
 //67890
 ```
 
@@ -267,7 +260,7 @@ Store API methods, used to manipulate stores.
 
 - Submit store values
 
-`submit(validate: (values: T) => T)`
+`submit(fetcher: (values: T) => void)`
 
 ```ts
 import { FormUserFields, FormUser } from "./FormUser";
@@ -276,15 +269,7 @@ const { submit } = FormUser;
 
 const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
   e.preventDefault();
-  submit((data) => {
-    const errors = { ...FormUserFields };
-    if (!data.name) errors.name = "name required";
-    //check for errors
-    if (JSON.stringify(errors) === JSON.stringify(TsFormUserInitalValues))
-      console.log("send data", data);
-
-    return errors;
-  });
+  submit((data) => console.log("submit", data));
 };
 ```
 
@@ -796,11 +781,16 @@ type FormUserType = {
   name: string;
 };
 
-const FormUserFields = {
-  name: "",
+const resolver = (data: any) => {
+  const errors = {
+    name: "",
+  };
+  if (!data.name) errors.name = "name required";
+
+  return errors;
 };
 
-const FormUser = createForm<FormUserType>();
+const FormUser = createForm<FormUserType>({ resolver });
 
 const { field, submit } = FormUser;
 
@@ -815,15 +805,7 @@ const form = document.querySelector<HTMLFormElement>(".form");
 if (form)
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    submit((data) => {
-      let errors = { ...FormUserFields };
-      if (!data.name) errors.name = "name required";
-      //check for errors
-      if (JSON.stringify(errors) === JSON.stringify(FormUserFields))
-        console.log("send data", data);
-
-      return errors;
-    });
+    submit((data) => console.log(data));
   });
 ```
 
@@ -869,17 +851,7 @@ function Form() {
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    submit((data) => {
-      const errors = { ...FormUserFields };
-
-      if (!data.name) errors.name = "name required";
-      if (!data.document) errors.document = "document required";
-      //check for errors
-      if (JSON.stringify(errors) === JSON.stringify(TsFormUserInitalValues))
-        console.log("send data", data);
-
-      return errors;
-    });
+    submit((data) => console.log(data));
   };
 
   return (
@@ -894,6 +866,62 @@ function Form() {
 }
 
 export default Form;
+```
+
+### Vue
+
+Example for vuejs.
+
+```js
+<script>
+import createForm from 'ts-nano-form'
+
+const resolver = (data) => {
+  const errors = {
+    name: ''
+  }
+  if (!data.name) errors.name = 'name required'
+
+  return errors
+}
+
+const FormUser = createForm({
+  resolver: resolver
+})
+const { field, submit } = FormUser
+
+export default {
+  data() {
+    return {
+      name: null,
+      nameError: ''
+    }
+  },
+  beforeMount() {
+    field('name').subscribeValue((value) => (this.name = value))
+    field('name').subscribeError((value) => (this.nameError = value))
+  },
+  methods: {
+    changeName(event) {
+      field('name').setValue(event.target.value)
+    },
+    submitName() {
+      submit((data) => console.log('submit', data))
+    }
+  }
+}
+</script>
+
+<template>
+  <form @submit.prevent="submitName">
+    <label>
+      <p>Name</p>
+      <input :value="name" @input="(event) => changeName(event)" placeholder="Name" />
+      <p>{{ this.nameError }}</p>
+    </label>
+    <button type="submit">Submit</button>
+  </form>
+</template>
 ```
 
 ### Angular
@@ -941,15 +969,7 @@ export class FormComponent implements OnInit {
   }
 
   submitData() {
-    submit((data) => {
-      let errors = { ...FormUserFields };
-      if (!data.name) errors.name = "name required";
-      //check for errors
-      if (JSON.stringify(errors) === JSON.stringify(FormUserFields))
-        console.log("send data", data);
-
-      return errors;
-    });
+    submit((data) => console.log(data));
   }
 }
 ```
@@ -1001,7 +1021,6 @@ Examples of using form validators
 
 ```ts
 import { AnyObject, ObjectSchema, ValidationError } from "yup";
-import TsFormUser, { userSchema } from "./createFormUser";
 
 const validateYup = <T>(data: T, schema: ObjectSchema<AnyObject>) => {
   let errors = { ...data };
@@ -1019,15 +1038,21 @@ const validateYup = <T>(data: T, schema: ObjectSchema<AnyObject>) => {
   }
 };
 
-const { submit } = TsFormUser;
-submit((data) => validateYup(data, userSchema));
+const formSchema = object({
+  name: string().required(),
+});
+
+type FormUser = InferType<typeof formSchema>;
+
+const TsForm = createForm<FormUser>({
+  resolver: validateYup(formSchema),
+});
 ```
 
 #### Zod
 
 ```ts
 import { z } from "zod";
-import TsFormUser, { userSchema } from "./createFormUser";
 
 const validateZod = <T>(data: T, schema: z.ZodType<T>) => {
   let errors = { ...data };
@@ -1044,8 +1069,15 @@ const validateZod = <T>(data: T, schema: z.ZodType<T>) => {
   }
 };
 
-const { submit } = TsFormUser;
-submit((data) => validateZod(data, userSchema));
+const formSchema = object({
+  name: string().required(),
+});
+
+type FormUser = InferType<typeof formSchema>;
+
+const TsForm = createForm<FormUser>({
+  resolver: validateYup(formSchema),
+});
 ```
 
 ![divider](./divider.png)

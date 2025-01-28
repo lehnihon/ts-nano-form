@@ -219,7 +219,7 @@ describe("Form", () => {
         document: "123456",
         data: [{ image: "a" }, { image: "b" }],
       },
-      resolver: resolver,
+      resolver,
     });
 
     TsForm.field("name").setValue("");
