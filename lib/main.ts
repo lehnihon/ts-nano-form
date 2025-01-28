@@ -1,5 +1,5 @@
 import createForm from "./form";
-import createStore from "./form";
+import createStore from "./store";
 export default createForm;
 export { createStore };
 export * from "./constants";
