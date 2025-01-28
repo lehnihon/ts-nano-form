@@ -805,7 +805,7 @@ const form = document.querySelector<HTMLFormElement>(".form");
 if (form)
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    submit((data) => console.log(data));
+    submit((data) => console.log("submit", data));
   });
 ```
 
@@ -851,7 +851,7 @@ function Form() {
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    submit((data) => console.log(data));
+    submit((data) => console.log("submit", data));
   };
 
   return (
@@ -969,7 +969,7 @@ export class FormComponent implements OnInit {
   }
 
   submitData() {
-    submit((data) => console.log(data));
+    submit((data) => console.log("submit", data));
   }
 }
 ```
@@ -1000,15 +1000,7 @@ export class AppComponent {
   constructor() {}
 
   submitData() {
-    submit((data) => {
-      let errors = { ...FormUserFields };
-      if (!data.name) errors.name = "name required";
-      //check for errors
-      if (JSON.stringify(errors) === JSON.stringify(FormUserFields))
-        console.log("send data", data);
-
-      return errors;
-    });
+    submit((data) => console.log("submit", data));
   }
 }
 ```
