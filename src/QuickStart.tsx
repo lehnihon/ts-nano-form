@@ -1,4 +1,4 @@
-import createForm from "../lib/form";
+import { TsNanoForm } from "./nanoForm";
 
 export default function QuickStart() {
   type FormUserType = {
@@ -14,6 +14,7 @@ export default function QuickStart() {
     return errors;
   };
 
+  const { createForm } = TsNanoForm;
   const FormUser = createForm<FormUserType>({ resolver: validate });
 
   const { submit, field, getErrors } = FormUser;

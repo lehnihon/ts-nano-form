@@ -75,7 +75,7 @@ const { getValue, setValue } = field("name");
 
 setValue("user name");
 getValue();
-//123456
+//user name
 ```
 
 The submit method is sent after validating the resolver and the fields are returned via the data parameter.
@@ -84,12 +84,12 @@ The submit method is sent after validating the resolver and the fields are retur
 import { FormUser } from "./FormUser";
 
 const { submit, field } = FormUser;
-const { getError } = field("name");
+const { getError } = field("document");
 
 submit((data) => console.log("submit", data));
 
 getError();
-//'name required' if it is empty
+//'document required' if it is empty
 ```
 
 ![divider](./divider.png)

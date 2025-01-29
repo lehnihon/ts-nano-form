@@ -1,5 +1,7 @@
 import { describe, test, expect } from "vitest";
-import createForm from ".";
+import NanoForm from "../nanoForm";
+
+const { createForm } = NanoForm();
 
 describe("Form", () => {
   test("getValues", () => {

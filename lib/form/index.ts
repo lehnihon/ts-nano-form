@@ -1,32 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DEFAULT_MASK_OPTIONS } from "../constants";
-import { getPlaceholder, mask, maskMoney, unmask, unmaskMoney } from "../mask";
 import createStore from "../store";
-import {
-  CreateForm,
-  CreateFormProps,
-  MaskOptions,
-  MoneyOptions,
-} from "../types";
+import { CreateFormType, CreateFormProps } from "../types";
 import { toString } from "../utils";
 import findStoreByPath from "../utils/findStoreByPath";
 import instanceOfStore from "../utils/instanceOfStore";
 import iterateStore from "../utils/iterateStore";
-import validateMoneyRules from "../utils/validateMoneyRules";
 import field from "./field";
 
-const createForm = <T extends Record<string, any>>(
-  params?: CreateFormProps<T>
-): CreateForm<T> => {
-  const _values = iterateStore(params?.initialValues || ({} as T), (value) =>
+const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
+  const _values = iterateStore(params?.initialValues || {}, (value) =>
     createStore(value)
   );
-  const _errors = iterateStore(params?.initialValues || ({} as T), () =>
+  const _errors = iterateStore(params?.initialValues || {}, () =>
     createStore()
   );
+  const _rulesMask = params.options.maskOptions;
+  const _rulesMoney = params.options.moneyOptions;
   let _isValid = false;
-  let _rulesMask = params?.options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
-  let _rulesMoney = validateMoneyRules(params?.options?.moneyOptions);
 
   const getValues = () =>
     iterateStore(_values, (value) => instanceOfStore(value) && value.get());
@@ -69,18 +59,6 @@ const createForm = <T extends Record<string, any>>(
     if (_isValid) fetcher(storeValues);
   };
 
-  const setRulesMask = (rules: MaskOptions) => {
-    _rulesMask = rules;
-  };
-
-  const setRulesMoney = (rules: MoneyOptions) => {
-    _rulesMoney = validateMoneyRules(rules);
-  };
-
-  const getRules = () => {
-    return { rulesMask: _rulesMask, rulesMoney: _rulesMoney };
-  };
-
   const getIsValid = () => {
     return _isValid;
   };
@@ -92,18 +70,8 @@ const createForm = <T extends Record<string, any>>(
     subscribeAllValues,
     subscribeAllErrors,
     reset,
-    field: (name: string) =>
-      field(name, _values, _errors, _rulesMask, _rulesMoney),
+    field: (name) => field(name, _values, _errors, _rulesMask, _rulesMoney),
     submit,
-    mask: (value: string, maskRule: string | string[]) =>
-      mask(value, maskRule, _rulesMask),
-    unmask: (value: string) => unmask(value, _rulesMask),
-    maskMoney: (value: string) => maskMoney(value, _rulesMoney),
-    unmaskMoney: (value: string) => unmaskMoney(value, _rulesMoney),
-    getPlaceholder: (value: string) => getPlaceholder(value, _rulesMask),
-    setRulesMask,
-    setRulesMoney,
-    getRules,
   };
 };
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import createForm from "../lib/form";
 import validateZod from "./validateZod";
+import { TsNanoForm } from "./nanoForm";
 
 export const formSchema = z.object({
   name: z.string().trim().min(1),
@@ -19,6 +19,8 @@ export const TsFormUserInitalValues = {
   document: "",
   data: [{ image: "" }],
 };
+
+const { createForm } = TsNanoForm;
 
 const TsFormUser = createForm<FormUser>({
   resolver: validateZod(formSchema),

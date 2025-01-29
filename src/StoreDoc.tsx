@@ -1,9 +1,11 @@
-import createForm from "../lib/form";
+import { TsNanoForm } from "./nanoForm";
 
 export default function StoreDoc() {
   type FormUserType = {
     document: string;
   };
+
+  const { createForm } = TsNanoForm;
 
   const FormUser = createForm<FormUserType>({
     initialValues: {

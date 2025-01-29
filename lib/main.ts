@@ -1,6 +1,6 @@
-import createForm from "./form";
+import NanoForm from "./nanoForm";
 import createStore from "./store";
-export default createForm;
+export default NanoForm;
 export { createStore };
 export * from "./constants";
 export * from "./enums";

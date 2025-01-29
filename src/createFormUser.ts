@@ -1,6 +1,6 @@
 import { array, InferType, object, string } from "yup";
-import createForm from "../lib/form";
 import validateYup from "./validateYup";
+import { TsNanoForm } from "./nanoForm";
 
 export const userSchema = object({
   name: string().required(),
@@ -19,6 +19,8 @@ export const TsFormUserInitalValues = {
   document: "",
   data: [{ image: "" }],
 };
+
+const { createForm } = TsNanoForm;
 
 const TsFormUser = createForm<FormUser>({
   resolver: validateYup(userSchema),
