@@ -40,11 +40,21 @@ npm install ts-nano-form
 
 ### Quickstart
 
+First initialize the main NanoForm object.
+
+```tsx
+import NanoForm from "ts-nano-form";
+
+const TsNanoForm = NanoForm();
+
+export default TsNanoForm;
+```
+
 For each form, create a component with the createForm method.
 Validation is done by the resolver.
 
 ```tsx
-import createForm from "ts-nano-form";
+import TsNanoForm from "./TsNanoForm";
 
 type FormUserType = {
   name: string;
@@ -62,6 +72,7 @@ const resolver = (data: any) => {
   return errors;
 };
 
+const { createForm } = TsNanoForm;
 export const FormUser = createForm<FormUserType>({ resolver });
 ```
 
@@ -78,7 +89,7 @@ getValue();
 //user name
 ```
 
-The submit method is sent after validating the resolver and the fields are returned via the data parameter.
+The submit method validate all fields by the resolver and are returned via the data parameter.
 
 ```tsx
 import { FormUser } from "./FormUser";
@@ -87,9 +98,6 @@ const { submit, field } = FormUser;
 const { getError } = field("document");
 
 submit((data) => console.log("submit", data));
-
-getError();
-//'document required' if it is empty
 ```
 
 ![divider](./divider.png)
