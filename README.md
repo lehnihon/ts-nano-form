@@ -46,15 +46,13 @@ First initialize the main NanoForm object.
 import NanoForm from "ts-nano-form";
 
 const TsNanoForm = NanoForm();
-
-export default TsNanoForm;
 ```
 
 For each form, create a component with the createForm method.
 Validation is done by the resolver.
 
 ```tsx
-import TsNanoForm from "./TsNanoForm";
+import NanoForm from "ts-nano-form";
 
 type FormUserType = {
   name: string;
@@ -72,21 +70,22 @@ const resolver = (data: any) => {
   return errors;
 };
 
+const TsNanoForm = NanoForm();
 const { createForm } = TsNanoForm;
-export const FormUser = createForm<FormUserType>({
+createForm<FormUserType>({
   name: "form-user",
   resolver,
 });
+export default TsNanoForm;
 ```
 
 The fields are filled in and returned by the setValue and getValue methods
 
 ```tsx
-import { FormUser } from "./FormUser";
+import TsNanoForm from "./nanoForm";
 
+const formUser = TsNanoForm.getForm("form-user");
 const { field } = FormUser;
-// or TsNanoForm.getForm('form-user')
-
 const { getValue, setValue } = field("name");
 
 setValue("user name");
@@ -97,9 +96,10 @@ getValue();
 The submit method validate all fields by the resolver and are returned via the data parameter.
 
 ```tsx
-import { FormUser } from "./FormUser";
+import TsNanoForm from "./nanoForm";
 
-const { submit, field } = FormUser;
+const formUser = TsNanoForm.getForm("form-user");
+const { submit, field } = formUser;
 const { getError } = field("document");
 
 submit((data) => console.log("submit", data));

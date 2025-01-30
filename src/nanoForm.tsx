@@ -21,13 +21,14 @@ type FormUser = InferType<typeof userSchema>;
 type FormLogin = InferType<typeof loginSchema>;
 
 const TsNanoForm = NanoForm();
+const { createForm } = TsNanoForm;
 
-TsNanoForm.createForm<FormUser>({
+createForm<FormUser>({
   name: "user",
   resolver: validateYup(userSchema),
 });
 
-TsNanoForm.createForm<FormLogin>({
+createForm<FormLogin>({
   name: "login",
   resolver: validateYup(loginSchema),
 });
