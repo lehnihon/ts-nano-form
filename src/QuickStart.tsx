@@ -1,4 +1,4 @@
-import { TsNanoForm } from "./nanoForm";
+import TsNanoForm from "./nanoForm";
 
 export default function QuickStart() {
   type FormUserType = {
