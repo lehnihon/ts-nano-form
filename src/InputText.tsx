@@ -1,25 +1,32 @@
 import { useSyncExternalStore } from "react";
-import TsFormUser from "./createFormUser";
+import useNanoForm from "./useNanoForm";
 
 interface InputTextProps {
-  field: string;
-  mask: string | string[];
+  name: string;
+  mask?: string | string[];
 }
 
-const InputText = ({ field, mask }: InputTextProps) => {
-  const { subscribeValue, subscribeError, getError, setValue, getMasked } =
-    TsFormUser.field(field);
+const InputText = ({ name, mask }: InputTextProps) => {
+  const { form } = useNanoForm();
+  const {
+    subscribeValue,
+    subscribeError,
+    getError,
+    setValue,
+    getValue,
+    getMasked,
+  } = form.field(name);
 
   const value = useSyncExternalStore(
     subscribeValue,
-    getMasked.bind(this, mask)
+    mask ? getMasked.bind(this, mask) : getValue
   );
   const error = useSyncExternalStore(subscribeError, getError);
 
   return (
     <>
-      <p>{field}</p>
-      <input value={value} onChange={(e) => setValue(e.target.value)} />
+      <p>{name}</p>
+      <input value={value || ""} onChange={(e) => setValue(e.target.value)} />
       <p>Error: {error}</p>
     </>
   );

@@ -1,6 +1,6 @@
 import { array, InferType, object, string } from "yup";
 import validateYup from "./validateYup";
-import { TsNanoForm } from "./nanoForm";
+import TsNanoForm from "./nanoForm";
 
 export const userSchema = object({
   name: string().required(),

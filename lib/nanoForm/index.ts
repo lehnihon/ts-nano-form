@@ -22,8 +22,11 @@ const NanoForm = (params?: NanoFormProps): NanoFormType => {
       _formList.push(form);
   };
 
-  const getForm = (name: string) =>
-    _formList.find((item) => item.name === name);
+  const getForm = (name: string) => {
+    const findForm = _formList.find((item) => item.name === name);
+    if (findForm) return findForm;
+    throw new Error("Form not found, check if the name of this form exists");
+  };
 
   const setRulesMask = (rules: MaskOptions) => {
     _rulesMask = rules;

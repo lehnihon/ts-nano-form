@@ -1,6 +1,6 @@
 import { z } from "zod";
 import validateZod from "./validateZod";
-import { TsNanoForm } from "./nanoForm";
+import TsNanoForm from "./nanoForm";
 
 export const formSchema = z.object({
   name: z.string().trim().min(1),

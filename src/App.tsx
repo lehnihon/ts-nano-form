@@ -1,18 +1,35 @@
 import "./App.css";
-import TsFormUser from "./createFormUser";
-
 import InputText from "./InputText";
+import TsNanoForm from "./nanoForm";
+import NanoFormProvider from "./nanoFormProvider";
 
 function App() {
-  const handleSubmit = () => {
-    TsFormUser.submit((data) => console.log(data));
+  const formLogin = TsNanoForm.getForm("login");
+  const formUser = TsNanoForm.getForm("user");
+
+  const handleSubmitLogin = () => {
+    formLogin.submit((data) => console.log("submit login", data));
+  };
+
+  const handleSubmitUser = () => {
+    formUser.submit((data) => console.log("submit user", data));
   };
 
   return (
     <>
-      <InputText field="name" mask={["000-000", "00-000-000"]} />
+      <NanoFormProvider form={formLogin}>
+        <InputText name="username" />
+        <InputText name="password" />
 
-      <button onClick={handleSubmit}>Send</button>
+        <button onClick={handleSubmitLogin}>Login</button>
+      </NanoFormProvider>
+
+      <NanoFormProvider form={formUser}>
+        <InputText name="name" />
+        <InputText name="document" mask={["000-000", "00-000-000"]} />
+
+        <button onClick={handleSubmitUser}>Send</button>
+      </NanoFormProvider>
     </>
   );
 }

@@ -105,8 +105,6 @@ const { getError } = field("document");
 submit((data) => console.log("submit", data));
 ```
 
-![divider](./divider.png)
-
 ## License
 
 [MIT](/LICENSE)
