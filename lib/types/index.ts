@@ -6,8 +6,8 @@ export type NanoFormType = {
   unmaskMoney: (value: string) => string;
   getPlaceholder: (value: string) => string;
   createForm: CreateFormRef;
-  setCurrentForm: (form: CreateFormType<any>) => void;
-  getCurrentForm: () => CreateFormType<any>;
+  getCurrentForm: () => CreateFormType<any> | undefined;
+  setCurrentForm: (name: string) => CreateFormType<any> | undefined;
   setRulesMask: (rules: MaskOptions) => void;
   setRulesMoney: (rules: MoneyOptions) => void;
   getRules: () => {
@@ -16,16 +16,18 @@ export type NanoFormType = {
   };
 };
 
-type CreateFormRef = <T>(params: {
-  initialValues?: T;
-  resolver?: (values: T) => Record<string, any> | undefined;
-}) => CreateFormType<T>;
-
 export type NanoFormProps = {
   options?: TsFormOptions;
 };
 
+export type CreateFormRef = <T>(params: {
+  name: string;
+  initialValues?: T;
+  resolver?: (values: T) => Record<string, any> | undefined;
+}) => CreateFormType<T>;
+
 export type CreateFormType<T> = {
+  name: string;
   getIsValid: () => boolean;
   getValues: () => T;
   getErrors: () => T;
@@ -41,6 +43,7 @@ export type CreateFormType<T> = {
 };
 
 export type CreateFormProps<T> = {
+  name: string;
   initialValues?: T;
   resolver?: (values: T) => Record<string, any> | undefined;
   options: {

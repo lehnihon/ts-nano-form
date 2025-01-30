@@ -6,21 +6,29 @@ import {
   MaskOptions,
   MoneyOptions,
   NanoFormType,
-  NanoFormProps,
   CreateFormType,
+  CreateFormRef,
+  NanoFormProps,
 } from "../types";
 import validateMoneyRules from "../utils/validateMoneyRules";
 
 const NanoForm = (params?: NanoFormProps): NanoFormType => {
-  let _currentForm: CreateFormType<any>;
+  const _formList: CreateFormType<any>[] = [];
+  let _currentForm: CreateFormType<any> | undefined;
   let _rulesMask = params?.options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
   let _rulesMoney = validateMoneyRules(params?.options?.moneyOptions);
 
-  const setCurrentForm = (form: CreateFormType<any>) => {
-    _currentForm = form;
+  const addForm = (form: CreateFormType<any>) => {
+    if (!_formList.find((item) => item.name === form.name))
+      _formList.push(form);
   };
 
   const getCurrentForm = () => _currentForm;
+
+  const setCurrentForm = (name: string) => {
+    _currentForm = _formList.find((item) => item.name === name);
+    return _currentForm;
+  };
 
   const setRulesMask = (rules: MaskOptions) => {
     _rulesMask = rules;
@@ -34,19 +42,24 @@ const NanoForm = (params?: NanoFormProps): NanoFormType => {
     return { rulesMask: _rulesMask, rulesMoney: _rulesMoney };
   };
 
+  const handleCreateForm: CreateFormRef = (params) => {
+    const createdForm = createForm({
+      ...params,
+      options: { maskOptions: _rulesMask, moneyOptions: _rulesMoney },
+    });
+    addForm(createdForm);
+    return createdForm;
+  };
+
   return {
     mask: (value, maskRule) => mask(value, maskRule, _rulesMask),
     unmask: (value) => unmask(value, _rulesMask),
     maskMoney: (value) => maskMoney(value, _rulesMoney),
     unmaskMoney: (value) => unmaskMoney(value, _rulesMoney),
     getPlaceholder: (value) => getPlaceholder(value, _rulesMask),
-    createForm: (params) =>
-      createForm({
-        ...params,
-        options: { maskOptions: _rulesMask, moneyOptions: _rulesMoney },
-      }),
-    setCurrentForm,
+    createForm: handleCreateForm,
     getCurrentForm,
+    setCurrentForm,
     setRulesMask,
     setRulesMoney,
     getRules,

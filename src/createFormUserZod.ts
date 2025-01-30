@@ -23,6 +23,7 @@ export const TsFormUserInitalValues = {
 const { createForm } = TsNanoForm;
 
 const TsFormUser = createForm<FormUser>({
+  name: "user",
   resolver: validateZod(formSchema),
 });
 

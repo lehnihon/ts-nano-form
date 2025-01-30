@@ -23,7 +23,10 @@ export const TsFormUserInitalValues = {
 const { createForm } = TsNanoForm;
 
 const TsFormUser = createForm<FormUser>({
+  name: "user",
   resolver: validateYup(userSchema),
 });
+
+TsNanoForm.setCurrentForm("user");
 
 export default TsFormUser;

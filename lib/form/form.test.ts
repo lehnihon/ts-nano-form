@@ -6,6 +6,7 @@ const { createForm } = NanoForm();
 describe("Form", () => {
   test("getValues", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -22,6 +23,7 @@ describe("Form", () => {
 
   test("getErrors", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -42,6 +44,7 @@ describe("Form", () => {
 
   test("subscribeValues", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -61,6 +64,7 @@ describe("Form", () => {
 
   test("subscribeErrors", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -80,6 +84,7 @@ describe("Form", () => {
 
   test("setValue", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -94,6 +99,7 @@ describe("Form", () => {
 
   test("setValue masked", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -108,6 +114,7 @@ describe("Form", () => {
 
   test("setValue getMasked", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -122,6 +129,7 @@ describe("Form", () => {
 
   test("setMasked", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -136,6 +144,7 @@ describe("Form", () => {
 
   test("setMasked getUnmasked", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -150,6 +159,7 @@ describe("Form", () => {
 
   test("setMoney", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -164,6 +174,7 @@ describe("Form", () => {
 
   test("setMoney masked", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -178,6 +189,7 @@ describe("Form", () => {
 
   test("setMoney getMoneyMasked", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -192,6 +204,7 @@ describe("Form", () => {
 
   test("setMoneyMasked", () => {
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
@@ -216,6 +229,7 @@ describe("Form", () => {
     };
 
     const TsForm = createForm({
+      name: "user",
       initialValues: {
         name: "Leandro",
         document: "123456",
