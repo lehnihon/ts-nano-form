@@ -8,6 +8,7 @@ export default function StoreDoc() {
   const { createForm } = TsNanoForm;
 
   const FormUser = createForm<FormUserType>({
+    name: "user",
     initialValues: {
       document: "12345",
     },

@@ -6,8 +6,7 @@ export type NanoFormType = {
   unmaskMoney: (value: string) => string;
   getPlaceholder: (value: string) => string;
   createForm: CreateFormRef;
-  getCurrentForm: () => CreateFormType<any> | undefined;
-  setCurrentForm: (name: string) => CreateFormType<any> | undefined;
+  getForm: (name: string) => CreateFormType<any> | undefined;
   setRulesMask: (rules: MaskOptions) => void;
   setRulesMoney: (rules: MoneyOptions) => void;
   getRules: () => {

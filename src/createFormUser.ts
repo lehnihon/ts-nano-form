@@ -27,6 +27,4 @@ const TsFormUser = createForm<FormUser>({
   resolver: validateYup(userSchema),
 });
 
-TsNanoForm.setCurrentForm("user");
-
 export default TsFormUser;

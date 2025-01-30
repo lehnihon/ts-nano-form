@@ -73,7 +73,10 @@ const resolver = (data: any) => {
 };
 
 const { createForm } = TsNanoForm;
-export const FormUser = createForm<FormUserType>({ resolver });
+export const FormUser = createForm<FormUserType>({
+  name: "form-user",
+  resolver,
+});
 ```
 
 The fields are filled in and returned by the setValue and getValue methods
@@ -82,6 +85,8 @@ The fields are filled in and returned by the setValue and getValue methods
 import { FormUser } from "./FormUser";
 
 const { field } = FormUser;
+// or TsNanoForm.getForm('form-user')
+
 const { getValue, setValue } = field("name");
 
 setValue("user name");

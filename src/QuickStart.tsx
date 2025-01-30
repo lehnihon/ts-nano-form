@@ -15,7 +15,10 @@ export default function QuickStart() {
   };
 
   const { createForm } = TsNanoForm;
-  const FormUser = createForm<FormUserType>({ resolver: validate });
+  const FormUser = createForm<FormUserType>({
+    name: "user",
+    resolver: validate,
+  });
 
   const { submit, field, getErrors } = FormUser;
 

@@ -3,14 +3,11 @@ import NanoForm from ".";
 
 describe("NanoForm", () => {
   test("setCurrentForm", () => {
-    const { getCurrentForm, setCurrentForm, createForm } = NanoForm();
+    const { getForm, createForm } = NanoForm();
     const userForm = createForm({ name: "user" });
     const userFormB = createForm({ name: "userb" });
-    setCurrentForm("user");
-    expect(getCurrentForm()).toStrictEqual(userForm);
-
-    setCurrentForm("userb");
-    expect(getCurrentForm()).toStrictEqual(userFormB);
+    expect(getForm("user")).toStrictEqual(userForm);
+    expect(getForm("userb")).toStrictEqual(userFormB);
   });
 
   test("mask", () => {

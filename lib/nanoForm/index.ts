@@ -14,7 +14,6 @@ import validateMoneyRules from "../utils/validateMoneyRules";
 
 const NanoForm = (params?: NanoFormProps): NanoFormType => {
   const _formList: CreateFormType<any>[] = [];
-  let _currentForm: CreateFormType<any> | undefined;
   let _rulesMask = params?.options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
   let _rulesMoney = validateMoneyRules(params?.options?.moneyOptions);
 
@@ -23,12 +22,8 @@ const NanoForm = (params?: NanoFormProps): NanoFormType => {
       _formList.push(form);
   };
 
-  const getCurrentForm = () => _currentForm;
-
-  const setCurrentForm = (name: string) => {
-    _currentForm = _formList.find((item) => item.name === name);
-    return _currentForm;
-  };
+  const getForm = (name: string) =>
+    _formList.find((item) => item.name === name);
 
   const setRulesMask = (rules: MaskOptions) => {
     _rulesMask = rules;
@@ -58,8 +53,7 @@ const NanoForm = (params?: NanoFormProps): NanoFormType => {
     unmaskMoney: (value) => unmaskMoney(value, _rulesMoney),
     getPlaceholder: (value) => getPlaceholder(value, _rulesMask),
     createForm: handleCreateForm,
-    getCurrentForm,
-    setCurrentForm,
+    getForm,
     setRulesMask,
     setRulesMoney,
     getRules,
