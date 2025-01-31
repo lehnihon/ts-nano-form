@@ -4,7 +4,7 @@ import { NanoFormContext, NanoFormContextType } from "./nanoFormProvider";
 const useNanoForm = (): NanoFormContextType => {
   const context = useContext(NanoFormContext);
   if (!context) {
-    throw new Error("useNanoForm deve ser usado dentro de um NanoFormProvider");
+    throw new Error("useNanoForm must be used inside a NanoFormProvider");
   }
   return context;
 };

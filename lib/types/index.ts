@@ -1,22 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type NanoFormType = {
-  mask: (value: string, maskRule: string | string[]) => string;
-  unmask: (value: string) => string;
-  maskMoney: (value: string) => string;
-  unmaskMoney: (value: string) => string;
-  getPlaceholder: (value: string) => string;
+  mask: (
+    value: string,
+    maskRule: string | string[],
+    maskOptions?: MaskOptions
+  ) => string;
+  unmask: (value: string, maskOptions?: MaskOptions) => string;
+  maskMoney: (value: string, moneyOptions?: MoneyOptions) => string;
+  unmaskMoney: (value: string, moneyOptions?: MoneyOptions) => string;
+  getPlaceholder: (value: string, maskOptions?: MaskOptions) => string;
   createForm: CreateFormRef;
   getForm: (name: string) => CreateFormType<any>;
-  setRulesMask: (rules: MaskOptions) => void;
-  setRulesMoney: (rules: MoneyOptions) => void;
-  getRules: () => {
-    rulesMask: MaskOptions;
-    rulesMoney: MoneyOptions;
-  };
 };
 
 export type NanoFormProps = {
-  options?: TsFormOptions;
+  maskOptions?: MaskOptions;
+  moneyOptions?: MoneyOptions;
 };
 
 export type CreateFormRef = <T>(params: {
@@ -76,12 +75,6 @@ export type Store = {
   emit: (value: any, prevValue: any) => void;
   get: () => any;
   set: (newValue: any) => void;
-};
-
-export type TsFormOptions = {
-  formOptions?: FormOptions;
-  maskOptions?: MaskOptions;
-  moneyOptions?: MoneyOptions;
 };
 
 export type FormOptions = {

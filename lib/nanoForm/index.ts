@@ -3,8 +3,6 @@ import { DEFAULT_MASK_OPTIONS } from "../constants";
 import createForm from "../form";
 import { getPlaceholder, mask, maskMoney, unmask, unmaskMoney } from "../mask";
 import {
-  MaskOptions,
-  MoneyOptions,
   NanoFormType,
   CreateFormType,
   CreateFormRef,
@@ -14,8 +12,8 @@ import validateMoneyRules from "../utils/validateMoneyRules";
 
 const NanoForm = (params?: NanoFormProps): NanoFormType => {
   const _formList: CreateFormType<any>[] = [];
-  let _rulesMask = params?.options?.maskOptions ?? DEFAULT_MASK_OPTIONS;
-  let _rulesMoney = validateMoneyRules(params?.options?.moneyOptions);
+  const _maskOptions = params?.maskOptions ?? DEFAULT_MASK_OPTIONS;
+  const _moneyOptions = validateMoneyRules(params?.moneyOptions);
 
   const addForm = (form: CreateFormType<any>) => {
     if (!_formList.find((item) => item.name === form.name))
@@ -28,38 +26,28 @@ const NanoForm = (params?: NanoFormProps): NanoFormType => {
     throw new Error("Form not found, check if the name of this form exists");
   };
 
-  const setRulesMask = (rules: MaskOptions) => {
-    _rulesMask = rules;
-  };
-
-  const setRulesMoney = (rules: MoneyOptions) => {
-    _rulesMoney = validateMoneyRules(rules);
-  };
-
-  const getRules = () => {
-    return { rulesMask: _rulesMask, rulesMoney: _rulesMoney };
-  };
-
   const handleCreateForm: CreateFormRef = (params) => {
     const createdForm = createForm({
       ...params,
-      options: { maskOptions: _rulesMask, moneyOptions: _rulesMoney },
+      options: { maskOptions: _maskOptions, moneyOptions: _moneyOptions },
     });
     addForm(createdForm);
     return createdForm;
   };
 
   return {
-    mask: (value, maskRule) => mask(value, maskRule, _rulesMask),
-    unmask: (value) => unmask(value, _rulesMask),
-    maskMoney: (value) => maskMoney(value, _rulesMoney),
-    unmaskMoney: (value) => unmaskMoney(value, _rulesMoney),
-    getPlaceholder: (value) => getPlaceholder(value, _rulesMask),
+    mask: (value, maskRule, optional) =>
+      mask(value, maskRule, optional ? optional : _maskOptions),
+    unmask: (value, optional) =>
+      unmask(value, optional ? optional : _maskOptions),
+    maskMoney: (value, optional) =>
+      maskMoney(value, optional ? optional : _moneyOptions),
+    unmaskMoney: (value, optional) =>
+      unmaskMoney(value, optional ? optional : _moneyOptions),
+    getPlaceholder: (value, optional) =>
+      getPlaceholder(value, optional ? optional : _maskOptions),
     createForm: handleCreateForm,
     getForm,
-    setRulesMask,
-    setRulesMoney,
-    getRules,
   };
 };
 
