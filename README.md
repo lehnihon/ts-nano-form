@@ -56,16 +56,13 @@ import NanoForm from "ts-nano-form";
 
 type FormUserType = {
   name: string;
-  document: string;
 };
 
 const resolver = (data: any) => {
   const errors = {
     name: "",
-    document: "",
   };
   if (!data.name) errors.name = "name required";
-  if (!data.document) errors.name = "document required";
 
   return errors;
 };
@@ -84,8 +81,7 @@ The fields are filled in and returned by the setValue and getValue methods
 ```tsx
 import TsNanoForm from "./nanoForm";
 
-const formUser = TsNanoForm.getForm("form-user");
-const { field } = FormUser;
+const { field } = TsNanoForm.getForm("form-user");
 const { getValue, setValue } = field("name");
 
 setValue("user name");
@@ -93,14 +89,12 @@ getValue();
 //user name
 ```
 
-The submit method validate all fields by the resolver and are returned via the data parameter.
+The submit method validate all fields by the resolver and the fields are returned via the data parameter.
 
 ```tsx
 import TsNanoForm from "./nanoForm";
 
-const formUser = TsNanoForm.getForm("form-user");
-const { submit, field } = formUser;
-const { getError } = field("document");
+const { submit } = TsNanoForm.getForm("form-user");
 
 submit((data) => console.log("submit", data));
 ```
