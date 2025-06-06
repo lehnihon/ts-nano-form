@@ -23,7 +23,11 @@ const field = (
   };
 
   const getMasked = (maskRule: string | string[]): string => {
-    return mask(toString(_storeValue.get()), maskRule, rulesMask);
+    return mask(
+      unmask(toString(_storeValue.get()), rulesMask),
+      maskRule,
+      rulesMask
+    );
   };
 
   const getUnmasked = (): string => {
@@ -44,14 +48,12 @@ const field = (
   };
 
   const setValue = (value: any): any => {
-    _storeValue.set(
-      typeof value === "string" ? unmask(value, rulesMask) : value
-    );
+    _storeValue.set(value);
     return getValue();
   };
 
   const setMasked = (value: string, maskRule: string | string[]): string => {
-    _storeValue.set(mask(value, maskRule, rulesMask));
+    _storeValue.set(mask(unmask(value, rulesMask), maskRule, rulesMask));
     return toString(getValue());
   };
 

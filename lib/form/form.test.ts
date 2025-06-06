@@ -109,7 +109,7 @@ describe("Form", () => {
 
     TsForm.field("name").setValue("123-456");
 
-    expect(TsForm.field("name").getValue()).toBe("123456");
+    expect(TsForm.field("name").getValue()).toBe("123-456");
   });
 
   test("setValue getMasked", () => {
