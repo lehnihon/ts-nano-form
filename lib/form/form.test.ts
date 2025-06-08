@@ -217,6 +217,25 @@ describe("Form", () => {
     expect(TsForm.field("name").getValue()).toBe("1.234,56");
   });
 
+  test("reset", () => {
+    const TsForm = createForm({
+      name: "user",
+      initialValues: {
+        name: "Leandro",
+        document: "123456",
+        data: { image: "abc", ext: "png" },
+      },
+    });
+
+    TsForm.reset({ name: "Toddy", "data.image": "cde", "data.ext": "jpg" });
+
+    expect(TsForm.getValues()).toStrictEqual({
+      name: "Toddy",
+      document: "123456",
+      data: { image: "cde", ext: "jpg" },
+    });
+  });
+
   test("submit", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resolver = (data: any) => {

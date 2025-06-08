@@ -20,7 +20,7 @@ export type NanoFormProps = {
 
 export type CreateFormRef = <T>(params: {
   name: string;
-  initialValues?: T;
+  initialValues?: Record<string, any>;
   resolver?: (values: T) => Record<string, any> | undefined;
 }) => CreateFormType<T>;
 
@@ -42,7 +42,7 @@ export type CreateFormType<T> = {
 
 export type CreateFormProps<T> = {
   name: string;
-  initialValues?: T;
+  initialValues?: Record<string, any>;
   resolver?: (values: T) => Record<string, any> | undefined;
   options: {
     maskOptions: MaskOptions;

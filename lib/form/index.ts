@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import createStore from "../store";
-import { CreateFormType, CreateFormProps } from "../types";
+import { CreateFormType, CreateFormProps, Store } from "../types";
 import { toString } from "../utils";
 import findStoreByPath from "../utils/findStoreByPath";
 import instanceOfStore from "../utils/instanceOfStore";
@@ -41,7 +41,11 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
     );
 
   const reset = (values: Record<string, any>) => {
-    iterateStore(values, (value) => instanceOfStore(value) && value.set(""));
+    iterateStore(
+      values || {},
+      (value, index) =>
+        index && (findStoreByPath(_values, index) as Store).set(value)
+    );
   };
 
   const submit = (fetcher: (values: T) => void) => {
@@ -49,13 +53,12 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
     const newErrors = params?.resolver
       ? params.resolver(storeValues) || {}
       : {};
-    reset(_errors);
+    iterateStore(_errors, (value) => instanceOfStore(value) && value.set(""));
     _isValid = true;
     Object.keys(newErrors).map((key) => {
       if (!newErrors[key]) return;
       _isValid = false;
-      const store = findStoreByPath(_errors, key);
-      store.set(newErrors[key]);
+      findStoreByPath(_errors, key).set(newErrors[key]);
     });
     if (_isValid) fetcher(storeValues);
   };
