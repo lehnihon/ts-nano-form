@@ -16,6 +16,7 @@ export type NanoFormType = {
 export type NanoFormProps = {
   maskOptions?: MaskOptions;
   moneyOptions?: MoneyOptions;
+  formOptions?: FormOptions;
 };
 
 export type CreateFormRef = <T>(params: {
@@ -36,6 +37,8 @@ export type CreateFormType<T> = {
     listener: (value: any, prevValue: any) => void
   ) => Record<string, any>;
   reset: (values: Record<string, any>) => void;
+  resetValues: () => void;
+  resetErrors: () => void;
   field: (name: string) => Field;
   submit: (fetcher: (values: T) => void) => void;
 };
@@ -45,6 +48,7 @@ export type CreateFormProps<T> = {
   initialValues?: Record<string, any>;
   resolver?: (values: T) => Record<string, any> | undefined;
   options: {
+    formOptions: FormOptions;
     maskOptions: MaskOptions;
     moneyOptions: MoneyOptions;
   };
@@ -78,7 +82,7 @@ export type Store = {
 };
 
 export type FormOptions = {
-  test: string;
+  showLogErrors: boolean;
 };
 
 export type MaskOptions = {

@@ -14,8 +14,11 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
   const _errors = iterateStore(params?.initialValues || {}, () =>
     createStore()
   );
-  const _rulesMask = params.options.maskOptions;
-  const _rulesMoney = params.options.moneyOptions;
+  const {
+    formOptions: _rulesOptions,
+    maskOptions: _rulesMask,
+    moneyOptions: _rulesMoney,
+  } = params.options;
   const name = params.name;
   let _isValid = false;
 
@@ -40,20 +43,29 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
       (value) => instanceOfStore(value) && value.subscribe(listener)
     );
 
-  const reset = (values: Record<string, any>) => {
-    iterateStore(
-      values || {},
-      (value, index) =>
-        index && (findStoreByPath(_values, index) as Store).set(value)
+  const reset = (values: Record<string, any>) =>
+    Object.keys(values).map((key) =>
+      (findStoreByPath(_values, key) as Store).set(values[key])
     );
-  };
+
+  const resetValues = () =>
+    iterateStore(
+      _values,
+      (value) => instanceOfStore(value) && value.set(undefined)
+    );
+
+  const resetErrors = () =>
+    iterateStore(
+      _errors,
+      (value) => instanceOfStore(value) && value.set(undefined)
+    );
 
   const submit = (fetcher: (values: T) => void) => {
     const storeValues = getValues();
     const newErrors = params?.resolver
       ? params.resolver(storeValues) || {}
       : {};
-    iterateStore(_errors, (value) => instanceOfStore(value) && value.set(""));
+    resetErrors();
     _isValid = true;
     Object.keys(newErrors).map((key) => {
       if (!newErrors[key]) return;
@@ -61,6 +73,7 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
       findStoreByPath(_errors, key).set(newErrors[key]);
     });
     if (_isValid) fetcher(storeValues);
+    else if (_rulesOptions.showLogErrors) console.log(getErrors());
   };
 
   const getIsValid = () => {
@@ -75,6 +88,8 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
     subscribeAllValues,
     subscribeAllErrors,
     reset,
+    resetValues,
+    resetErrors,
     field: (name) => field(name, _values, _errors, _rulesMask, _rulesMoney),
     submit,
   };

@@ -1,5 +1,9 @@
 import { MapOptions } from "../types";
 
+export const DEFAULT_FORM_OPTIONS = {
+  showLogErrors: true,
+};
+
 export const DEFAULT_MONEY_OPTIONS = {
   thousands: ".",
   decimal: ",",

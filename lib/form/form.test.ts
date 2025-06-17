@@ -236,6 +236,25 @@ describe("Form", () => {
     });
   });
 
+  test("resetValues", () => {
+    const TsForm = createForm({
+      name: "user",
+      initialValues: {
+        name: "Leandro",
+        document: "123456",
+        data: { image: "abc", ext: "png" },
+      },
+    });
+
+    TsForm.resetValues();
+
+    expect(TsForm.getValues()).toStrictEqual({
+      name: undefined,
+      document: undefined,
+      data: { image: undefined, ext: undefined },
+    });
+  });
+
   test("submit", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resolver = (data: any) => {

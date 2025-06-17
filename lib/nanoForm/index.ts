@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DEFAULT_MASK_OPTIONS } from "../constants";
+import { DEFAULT_FORM_OPTIONS, DEFAULT_MASK_OPTIONS } from "../constants";
 import createForm from "../form";
 import { getPlaceholder, mask, maskMoney, unmask, unmaskMoney } from "../mask";
 import {
@@ -12,6 +12,7 @@ import validateMoneyRules from "../utils/validateMoneyRules";
 
 const NanoForm = (params?: NanoFormProps): NanoFormType => {
   const _formList: CreateFormType<any>[] = [];
+  const _formOptions = params?.formOptions ?? DEFAULT_FORM_OPTIONS;
   const _maskOptions = params?.maskOptions ?? DEFAULT_MASK_OPTIONS;
   const _moneyOptions = validateMoneyRules(params?.moneyOptions);
 
@@ -29,7 +30,11 @@ const NanoForm = (params?: NanoFormProps): NanoFormType => {
   const handleCreateForm: CreateFormRef = (params) => {
     const createdForm = createForm({
       ...params,
-      options: { maskOptions: _maskOptions, moneyOptions: _moneyOptions },
+      options: {
+        formOptions: _formOptions,
+        maskOptions: _maskOptions,
+        moneyOptions: _moneyOptions,
+      },
     });
     addForm(createdForm);
     return createdForm;
