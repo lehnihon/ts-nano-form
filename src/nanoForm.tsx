@@ -1,15 +1,10 @@
 import NanoForm from "../lib/nanoForm";
-import { array, InferType, object, string } from "yup";
+import { InferType, object, string } from "yup";
 import validateYup from "./validateYup";
 
 const userSchema = object({
   name: string().required(),
   document: string().required(),
-  data: array(
-    object({
-      image: string().required(),
-    })
-  ).required(),
 });
 
 const loginSchema = object({

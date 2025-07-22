@@ -52,6 +52,11 @@ const field = (
     return getValue();
   };
 
+  const setUnmasked = (value: any): any => {
+    _storeValue.set(unmask(value, rulesMask));
+    return getValue();
+  };
+
   const setMasked = (value: string, maskRule: string | string[]): string => {
     _storeValue.set(mask(unmask(value, rulesMask), maskRule, rulesMask));
     return toString(getValue());
@@ -82,6 +87,7 @@ const field = (
     getError,
     setError,
     setValue,
+    setUnmasked,
     setMasked,
     setMoney,
     setMoneyMasked,

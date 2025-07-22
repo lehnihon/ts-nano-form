@@ -112,6 +112,21 @@ describe("Form", () => {
     expect(TsForm.field("name").getValue()).toBe("123-456");
   });
 
+  test("setValue unmasked", () => {
+    const TsForm = createForm({
+      name: "user",
+      initialValues: {
+        name: "Leandro",
+        document: "123456",
+        data: [{ image: "a" }, { image: "b" }],
+      },
+    });
+
+    TsForm.field("name").setUnmasked("123-456");
+
+    expect(TsForm.field("name").getValue()).toBe("123456");
+  });
+
   test("setValue getMasked", () => {
     const TsForm = createForm({
       name: "user",

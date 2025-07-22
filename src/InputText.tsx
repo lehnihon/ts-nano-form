@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import useNanoForm from "./useNanoForm";
+import TsNanoForm from "./nanoForm";
 
 interface InputTextProps {
   name: string;
@@ -26,7 +27,10 @@ const InputText = ({ name, mask }: InputTextProps) => {
   return (
     <>
       <p>{name}</p>
-      <input value={value || ""} onChange={(e) => setValue(e.target.value)} />
+      <input
+        value={value || ""}
+        onChange={(e) => setValue(TsNanoForm.unmask(e.target.value))}
+      />
       <p>Error: {error}</p>
     </>
   );

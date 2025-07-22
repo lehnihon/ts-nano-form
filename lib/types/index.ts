@@ -63,6 +63,7 @@ export type Field = {
   getError: () => string;
   setError: (value: string) => string;
   setValue: (value: any) => any;
+  setUnmasked: (value: any) => string;
   setMasked: (value: string, maskRule: string | string[]) => string;
   setMoney: (value: string) => string;
   setMoneyMasked: (value: string) => string;
