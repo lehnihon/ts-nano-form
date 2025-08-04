@@ -12,11 +12,47 @@ import clearMoneyValue from "./clearMoneyValue";
 import applyMask from "./applyMask";
 import applyMaskMoney from "./applyMaskMoney";
 import findMaskRule from "./findMaskRule";
+import flattenObject from "./flattenObject";
+import unflattenObject from "./unflattenObject";
 
 describe("Utils Form", () => {
   test("instanceOfStore", () => {
     const store = createStore();
     expect(instanceOfStore(store)).toBe(true);
+  });
+
+  test("flattenObject", () => {
+    const values = {
+      name: "John Doe",
+      document: [
+        { name: "A", cpf: 123 },
+        { name: "B", cpf: 456 },
+      ],
+    };
+    expect(flattenObject(values)).toStrictEqual({
+      name: "John Doe",
+      "document.0.name": "A",
+      "document.0.cpf": 123,
+      "document.1.name": "B",
+      "document.1.cpf": 456,
+    });
+  });
+
+  test("unflattenObject", () => {
+    const values = {
+      name: "John Doe",
+      "document.0.name": "A",
+      "document.0.cpf": 123,
+      "document.1.name": "B",
+      "document.1.cpf": 456,
+    };
+    expect(unflattenObject(values)).toStrictEqual({
+      name: "John Doe",
+      document: [
+        { name: "A", cpf: 123 },
+        { name: "B", cpf: 456 },
+      ],
+    });
   });
 
   test("findStoreByPath", () => {

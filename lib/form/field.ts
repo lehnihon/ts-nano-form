@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mask, maskMoney, unmask, unmaskMoney } from "../mask";
+import createStore from "../store";
 import { Field, MaskOptions, MoneyOptions, Store } from "../types";
 import { toString } from "../utils";
-import findStoreByPath from "../utils/findStoreByPath";
 
 const field = (
   name: string,
@@ -11,8 +11,8 @@ const field = (
   rulesMask: MaskOptions,
   rulesMoney: MoneyOptions
 ): Field => {
-  const _storeValue = findStoreByPath(values, name) as Store;
-  const _storeError = findStoreByPath(errors, name) as Store;
+  const _storeValue: Store = values[name] ?? (values[name] = createStore());
+  const _storeError: Store = errors[name] ?? (errors[name] = createStore());
 
   const getValue = (): any => {
     return _storeValue.get();

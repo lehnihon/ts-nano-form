@@ -29,13 +29,14 @@ export type CreateFormType<T> = {
   name: string;
   getIsValid: () => boolean;
   getValues: () => T;
-  getErrors: () => T;
+  getErrors: () => any;
   subscribeAllValues: (
     listener: (value: any, prevValue: any) => void
   ) => Record<string, any>;
   subscribeAllErrors: (
     listener: (value: any, prevValue: any) => void
   ) => Record<string, any>;
+  clearValues: () => void;
   reset: (values: Record<string, any>) => void;
   resetValues: () => void;
   resetErrors: () => void;

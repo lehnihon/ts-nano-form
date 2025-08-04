@@ -36,7 +36,7 @@ describe("Form", () => {
     TsForm.field("data.1.image").setError("required image b");
 
     expect(TsForm.getErrors()).toStrictEqual({
-      name: "",
+      name: undefined,
       document: "required document",
       data: [{ image: "required image a" }, { image: "required image b" }],
     });
@@ -232,6 +232,25 @@ describe("Form", () => {
     expect(TsForm.field("name").getValue()).toBe("1.234,56");
   });
 
+  test("clearValues", () => {
+    const TsForm = createForm({
+      name: "user",
+      initialValues: {
+        name: "Leandro",
+        document: "123456",
+        data: { image: "abc", ext: "png" },
+      },
+    });
+
+    TsForm.clearValues();
+
+    expect(TsForm.getValues()).toStrictEqual({
+      name: undefined,
+      document: undefined,
+      data: { image: undefined, ext: undefined },
+    });
+  });
+
   test("reset", () => {
     const TsForm = createForm({
       name: "user",
@@ -261,12 +280,14 @@ describe("Form", () => {
       },
     });
 
+    TsForm.field("name").setValue("username");
+
     TsForm.resetValues();
 
     expect(TsForm.getValues()).toStrictEqual({
-      name: undefined,
-      document: undefined,
-      data: { image: undefined, ext: undefined },
+      name: "Leandro",
+      document: "123456",
+      data: { image: "abc", ext: "png" },
     });
   });
 
