@@ -57,11 +57,13 @@ export type CreateFormProps<T> = {
 
 export type Field = {
   getValue: () => any;
+  getValueStore: () => Store;
   getMasked: (maskRule: string | string[]) => string;
   getUnmasked: () => string;
   getMoneyMasked: () => string;
   getMoneyUnmasked: () => string;
   getError: () => string;
+  getErrorStore: () => Store;
   setError: (value: string) => string;
   setValue: (value: any) => any;
   setUnmasked: (value: any) => string;

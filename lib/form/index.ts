@@ -38,6 +38,12 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
       )
     );
 
+  const getValueStore = (name: string): Store =>
+    name in _values ? _values[name] : (_values[name] = createStore());
+
+  const getErrorStore = (name: string): Store =>
+    name in _errors ? _errors[name] : (_errors[name] = createStore());
+
   const subscribeAllValues = (listener: (value: any, prevValue: any) => void) =>
     Object.values(_values).map((value: Store) => value.subscribe(listener));
 
@@ -60,16 +66,21 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
 
   const submit = (fetcher: (values: T) => void) => {
     const storeValues = getValues();
+    validateSubmit(storeValues);
+    return _isValid
+      ? fetcher(storeValues)
+      : _rulesOptions.showLogErrors && console.log(getErrors());
+  };
+
+  const validateSubmit = (storeValues: T) => {
     const newErrors = (params?.resolver && params.resolver(storeValues)) ?? {};
-    resetErrors();
     _isValid = true;
+    resetErrors();
     Object.keys(newErrors).map((key) => {
       if (!newErrors[key]) return;
       _isValid = false;
-      (_errors[key] ?? (_errors[key] = createStore())).set(newErrors[key]);
+      getErrorStore(key).set(newErrors[key]);
     });
-    if (_isValid) fetcher(storeValues);
-    else if (_rulesOptions.showLogErrors) console.log(getErrors());
   };
 
   const getIsValid = () => {
@@ -87,7 +98,13 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
     reset,
     resetValues,
     resetErrors,
-    field: (name) => field(name, _values, _errors, _rulesMask, _rulesMoney),
+    field: (name) =>
+      field(
+        () => getValueStore(name),
+        () => getErrorStore(name),
+        _rulesMask,
+        _rulesMoney
+      ),
     submit,
   };
 };

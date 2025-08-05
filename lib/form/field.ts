@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mask, maskMoney, unmask, unmaskMoney } from "../mask";
-import createStore from "../store";
 import { Field, MaskOptions, MoneyOptions, Store } from "../types";
 import { toString } from "../utils";
 
 const field = (
-  name: string,
-  values: Record<string, any>,
-  errors: Record<string, any>,
+  getValueStore: () => Store,
+  getErrorStore: () => Store,
   rulesMask: MaskOptions,
   rulesMoney: MoneyOptions
 ): Field => {
-  const _storeValue: Store = values[name] ?? (values[name] = createStore());
-  const _storeError: Store = errors[name] ?? (errors[name] = createStore());
+  const _storeValue: Store = getValueStore();
+  const _storeError: Store = getErrorStore();
 
   const getValue = (): any => {
     return _storeValue.get();
@@ -80,11 +78,13 @@ const field = (
 
   return {
     getValue,
+    getValueStore,
     getMasked,
     getUnmasked,
     getMoneyMasked,
     getMoneyUnmasked,
     getError,
+    getErrorStore,
     setError,
     setValue,
     setUnmasked,
