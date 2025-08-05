@@ -60,9 +60,7 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
 
   const submit = (fetcher: (values: T) => void) => {
     const storeValues = getValues();
-    const newErrors = params?.resolver
-      ? params.resolver(storeValues) || {}
-      : {};
+    const newErrors = (params?.resolver && params.resolver(storeValues)) ?? {};
     resetErrors();
     _isValid = true;
     Object.keys(newErrors).map((key) => {
