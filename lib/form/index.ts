@@ -21,7 +21,6 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
     maskOptions: _rulesMask,
     moneyOptions: _rulesMoney,
   } = params.options;
-  const name = params.name;
   let _isValid = false;
 
   const getValues = (): T =>
@@ -88,7 +87,7 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
   };
 
   return {
-    name,
+    name: params.name,
     getIsValid,
     getValues,
     getErrors,
