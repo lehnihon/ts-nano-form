@@ -24,14 +24,14 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
   const name = params.name;
   let _isValid = false;
 
-  const getValues = () =>
+  const getValues = (): T =>
     unflattenObject(
       Object.fromEntries(
         Object.entries(_values).map(([key, value]) => [key, value.get()])
       )
     );
 
-  const getErrors = () =>
+  const getErrors = (): T =>
     unflattenObject(
       Object.fromEntries(
         Object.entries(_errors).map(([key, value]) => [key, value.get()])

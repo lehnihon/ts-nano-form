@@ -29,7 +29,7 @@ export type CreateFormType<T> = {
   name: string;
   getIsValid: () => boolean;
   getValues: () => T;
-  getErrors: () => any;
+  getErrors: () => T;
   subscribeAllValues: (
     listener: (value: any, prevValue: any) => void
   ) => Record<string, any>;
