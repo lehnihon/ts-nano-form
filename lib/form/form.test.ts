@@ -270,6 +270,19 @@ describe("Form", () => {
     });
   });
 
+  test("reset without initial values", () => {
+    const TsForm = createForm({
+      name: "user",
+    });
+
+    TsForm.reset({ name: "Toddy", "data.image": "cde", "data.ext": "jpg" });
+
+    expect(TsForm.getValues()).toStrictEqual({
+      name: "Toddy",
+      data: { image: "cde", ext: "jpg" },
+    });
+  });
+
   test("resetValues", () => {
     const TsForm = createForm({
       name: "user",

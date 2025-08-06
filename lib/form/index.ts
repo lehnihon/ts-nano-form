@@ -53,7 +53,7 @@ const createForm = <T>(params: CreateFormProps<T>): CreateFormType<T> => {
     Object.keys(_values).map((key) => _values[key].set(undefined));
 
   const reset = (values: Record<string, any>) =>
-    Object.keys(values).map((key) => _values[key].set(values[key]));
+    Object.keys(values).map((key) => getValueStore(key).set(values[key]));
 
   const resetValues = () =>
     Object.keys(_values).map((key) =>
