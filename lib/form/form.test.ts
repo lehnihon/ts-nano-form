@@ -232,6 +232,30 @@ describe("Form", () => {
     expect(TsForm.field("name").getValue()).toBe("1.234,56");
   });
 
+  test("getValueStore", () => {
+    const TsForm = createForm({
+      name: "user",
+      initialValues: {
+        name: "Leandro",
+        document: "123456",
+      },
+    });
+
+    TsForm.field("name").setValue("123");
+
+    expect(TsForm.field("name").getValueStore().get()).toBe("123");
+  });
+
+  test("getErrorStore", () => {
+    const TsForm = createForm({
+      name: "user",
+    });
+
+    TsForm.field("name").setError("invalid");
+
+    expect(TsForm.field("name").getErrorStore().get()).toBe("invalid");
+  });
+
   test("clearValues", () => {
     const TsForm = createForm({
       name: "user",
@@ -301,6 +325,20 @@ describe("Form", () => {
       name: "Leandro",
       document: "123456",
       data: { image: "abc", ext: "png" },
+    });
+  });
+
+  test("resetErrors", () => {
+    const TsForm = createForm({
+      name: "user",
+    });
+
+    TsForm.field("name").setError("username");
+
+    TsForm.resetErrors();
+
+    expect(TsForm.getErrors()).toStrictEqual({
+      name: undefined,
     });
   });
 
